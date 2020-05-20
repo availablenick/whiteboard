@@ -3,6 +3,6 @@ import React from 'react'
 import App from './App'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.scss'
-import './fontawesome'
+import './res/fontawesome'
 
 ReactDOM.render(<App />, document.getElementById('root'))

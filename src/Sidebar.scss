@@ -1,14 +1,9 @@
 aside {
-  //background: linear-gradient(to bottom, #111, #222);
   background: black;
   box-shadow: 0 0 3px black;
   font-size: 1em;
   text-align: center;
   z-index: 10;
-
-  span, li {
-    transition: all 0.2s ease;
-  }
 
   span {
     padding: 0.8em 0;
@@ -20,6 +15,7 @@ aside {
       height: 30px;
       justify-content: center;
       padding: 0;
+      transition: all 0.2s ease;
       width: 30px;
 
       &:hover {
@@ -34,14 +30,7 @@ aside {
     background: rgb(0, 0, 0);
     border-bottom: 1px solid #333;
     list-style-type: none;
-    padding: 0.8em 0.8em;
     width: 100%;
-
-    &:hover {
-      background: #ddd;
-      color: black;
-      cursor: pointer;
-    }
 
     &:last-of-type {
       border: 0;
