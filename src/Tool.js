@@ -5,27 +5,28 @@ import './Tool.scss'
 function Tool(props) {
   const handleClick = (event) => {
     event.stopPropagation()
+    let tool = props.icon
     if (props.isSelected)
-      props.setBoardCursor('')
-    else
-      props.setBoardCursor('cell')
+      tool = 'none'
 
+    props.setTool(tool)
     props.setSidebarState(prevState => {
       let newToolsInfo = prevState.toolsInfo.map(item => {
-        let value = null
+        let value = false
         if (item.name === props.icon)
           value = !item.value
-          
+
         return { name: item.name, value: value }
       })
 
       return { toolsInfo: newToolsInfo }
     })
   }
-  
+
   return (
-    <span 
-      className='tool w-100 d-inline-block' style={props.style} onClick={handleClick}>
+    <span
+      className='tool d-inline-block w-100' style={props.style}
+      onClick={handleClick}>
       <FontAwesomeIcon icon={props.icon} />
     </span>
   )
