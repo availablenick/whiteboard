@@ -1,6 +1,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBars,
+  faBroom,
   faEraser,
   faEyeDropper,
   faFill,
@@ -11,6 +12,7 @@ import {
 
 library.add(
   faBars,
+  faBroom,
   faEraser,
   faEyeDropper,
   faFill,

@@ -1,0 +1,11 @@
+.helper {
+  border-radius: 50%;
+  height: 2em;
+  width: 2em;
+
+  &:hover {
+    background: #ddd;
+    color: black;
+    cursor: pointer;
+  }
+}

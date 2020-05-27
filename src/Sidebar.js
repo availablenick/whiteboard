@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Helper from './Helper'
 import Tool from './Tool'
+import { helpers } from './res/helpers'
 import { tools } from './res/tools'
 import './Sidebar.scss'
 
@@ -28,6 +29,7 @@ function Sidebar(props) {
     )
   })
 
+  let helpersList = helpers.map(item => <li key={item}><Helper icon={item} /></li>)
   const handleClick = () => {
     props.setTool('none')
     setState(prevState => {
@@ -42,13 +44,13 @@ function Sidebar(props) {
   return (
     <aside className='d-flex flex-column justify-content-between text-white'
       onClick={handleClick}>
-      <ul className='p-0 w-100'>
+      <ul className='tools-list p-0'>
         {toolsList}
       </ul>
 
-      <span>
-        <span><FontAwesomeIcon icon='bars' /></span>
-      </span>
+      <ul className='helpers-list p-0'>
+        {helpersList}
+      </ul>
     </aside>
   )
 }
