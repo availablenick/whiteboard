@@ -1,36 +1,45 @@
 import React, { useState, useEffect } from 'react'
+import TextBlock from './text/TextBlock'
 import { cursors, behaviors } from './res/tools'
 
-const Board = React.memo(
-  (props) => {
-    let [isWriting, setIsWriting] = useState(false)
-    useEffect(() => {
-      console.log('rendering', props.tool)
-      let canvas = document.getElementsByTagName('canvas')[0]
-      let ctx = canvas.getContext('2d')
-      ctx.fillStyle = '#fff'
-      ctx.fillRect(0, 0, props.width, props.height)
-    }, [])
+function Board(props) {
+  let initialState = {
+    isWriting: false,
+    x: -1,
+    y: -1
+  }
 
-    const handleClick = (event) => {
-      if (!isWriting) {
-        behaviors[props.tool](event, setIsWriting)
-      }
+  let [state, setState] = useState(initialState)
+  useEffect(() => {
+    let canvas = document.getElementsByTagName('canvas')[0]
+    let ctx = canvas.getContext('2d')
+    ctx.fillStyle = '#fff'
+    ctx.fillRect(0, 0, props.width, props.height)
+  }, [])
+
+  const handleClick = (event) => {
+    if (!state.isWriting) {
+      behaviors[props.tool](event, setState)
     }
+  }
 
-    const handleMouseDown = (event) => {
-      if (event.button === 0) {
-        behaviors[props.tool](event)
-      }
+  const handleMouseDown = (event) => {
+    if (event.button === 0) {
+      behaviors[props.tool](event)
     }
+  }
 
-    const handleMouseMove = (event) => {
-      if (event.buttons === 1) {
-        behaviors[props.tool](event)
-      }
+  const handleMouseMove = (event) => {
+    if (event.buttons === 1) {
+      behaviors[props.tool](event)
     }
+  }
 
-    return (
+  return (
+    <div id='board-wrapper'
+      className='bg-dark d-flex flex-grow-1 align-items-center
+        justify-content-center h-100'>
+
       <canvas className='m-5' width={props.width} height={props.height}
         style={{ cursor: cursors[props.tool], boxShadow: '10px 10px 20px black' }}
         onClick={handleClick}
@@ -39,16 +48,12 @@ const Board = React.memo(
 
         No support for canvas.
       </canvas>
-    )
-  },
 
-  (prevProps, nextProps) => {
-    if (prevProps.tool === nextProps.tool) {
-      return true
-    }
-
-    return false
-  }
-)
+      {state.isWriting &&
+        <TextBlock x={state.x} y={state.y} setState={setState} />
+      }
+    </div>
+  )
+}
 
 export default Board

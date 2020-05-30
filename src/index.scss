@@ -10,21 +10,3 @@ html, body {
 #root {
   height: 100%;
 }
-
-.text-block {
-  border: 2px dashed rgb(0, 135, 255);
-  cursor: move;
-  display: inline-flex;
-  padding: 2px;
-  position: absolute;
-
-  > textarea {
-    background: none;
-    border: 0;
-    font-size: 2em;
-    outline: none;
-    overflow: hidden;
-    padding: 0;
-    resize: both;
-  }
-}
