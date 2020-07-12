@@ -1,0 +1,37 @@
+.tool-group {
+  position: relative;
+  
+  > span {
+    padding: 0.75em;
+
+    &:hover {
+      background: #ddd;
+      color: #222;
+      
+      .show-hide {
+        border-left: 4.5px solid #222;
+      }
+    }
+
+    .show-hide {
+      border-bottom: 4.5px solid transparent;
+      border-left: 4.5px solid white;
+      border-top: 4.5px solid transparent;
+      bottom: 0;
+      position: absolute;
+      right: 2px;
+      transform: rotate(45deg);
+    }
+  }  
+
+  ul {
+    background: black;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    color: white;
+    left: 100%;
+    padding: 0;
+    position: absolute;
+    top: 0;
+  }
+}

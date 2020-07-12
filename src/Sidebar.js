@@ -1,43 +1,57 @@
 import React, { useState } from 'react'
-import Helper from './Helper'
+import Group from './Group'
+import Misc from './Misc'
 import Tool from './Tool'
-import { helpers } from './res/helpers'
+import { misc } from './res/misc'
 import { tools } from './res/tools'
 import './Sidebar.scss'
 
 function Sidebar(props) {
-  let toolsInfo = tools.map(item => ({ name: item, value: false }))
-  let [state, setState] = useState({ toolsInfo: toolsInfo })
-  let toolsList = state.toolsInfo.map(item => {
-    let style = {}
-    if (item.value === true)
-      style = {
-        background: 'white',
-        color: 'black'
-      }
+  let initialState = {}
+  for (let key in tools) {
+    initialState[key] = false
+  }
+
+  let [state, setState] = useState(initialState)
+  let toolsList = Object.keys(state).map(key => {
+    if (tools[key] !== null) {
+      return (
+        <li key={key}>
+          <Group
+            name={key}
+            isSelected={state[key]}
+            setTool={props.setTool}
+            setSidebarState={setState}
+          />
+        </li>
+      )
+    }
 
     return (
-      <li key={item.name}>
+      <li key={key}>
         <Tool
-          icon={item.name}
-          isSelected={item.value}
+          icon={key}
+          isSelected={state[key]}
           setTool={props.setTool}
           setSidebarState={setState}
-          style={style}
         />
       </li>
     )
   })
 
-  let helpersList = helpers.map(item => <li key={item}><Helper icon={item} /></li>)
+  let miscList = misc.map(item => {
+    return <li key={item}><Misc icon={item} /></li>
+  })
+
   const handleClick = () => {
     props.setTool('none')
     setState(prevState => {
-      let newToolsInfo = prevState.toolsInfo.map(item => {
-        return { name: item.name, value: false }
-      })
+      let newState = {}
+      for (let key in prevState) {
+        newState[key] = false
+      }
 
-      return { toolsInfo: newToolsInfo }
+      return newState
     })
   }
 
@@ -48,8 +62,8 @@ function Sidebar(props) {
         {toolsList}
       </ul>
 
-      <ul className='helpers-list p-0'>
-        {helpersList}
+      <ul className='misc-list p-0'>
+        {miscList}
       </ul>
     </aside>
   )

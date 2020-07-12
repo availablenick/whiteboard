@@ -1,22 +1,22 @@
-const adjustLeft = (x, canvas, textBlock) => {
+const adjustToCanvasLeft = (x, canvas, element) => {
   let left = x
   let canvasRight = canvas.offsetLeft + canvas.offsetWidth
   if (left < canvas.offsetLeft) {
     left = canvas.offsetLeft
-  } else if (left + textBlock.offsetWidth > canvasRight) {
-    left = canvasRight - textBlock.offsetWidth
+  } else if (left + element.offsetWidth > canvasRight) {
+    left = canvasRight - element.offsetWidth
   }
-  
+
   return left
 }
 
-const adjustTop = (y, canvas, textBlock) => {
-  let top = y - textBlock.offsetHeight / 2
+const adjustToCanvasTop = (y, canvas, element) => {
+  let top = y - element.offsetHeight / 2
   let canvasBottom = canvas.offsetTop + canvas.offsetHeight
   if (top < canvas.offsetTop) {
     top = canvas.offsetTop
-  } else if (top + textBlock.offsetHeight > canvasBottom) {
-    top = canvasBottom - textBlock.offsetHeight
+  } else if (top + element.offsetHeight > canvasBottom) {
+    top = canvasBottom - element.offsetHeight
   }
 
   return top
@@ -101,6 +101,6 @@ const drawText = (canvas, textarea, rowHeight) => {
   }
 }
 
-exports.adjustLeft = adjustLeft
-exports.adjustTop = adjustTop
+exports.adjustToCanvasLeft = adjustToCanvasLeft
+exports.adjustToCanvasTop = adjustToCanvasTop
 exports.drawText = drawText

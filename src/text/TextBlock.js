@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { adjustLeft, adjustTop, drawText } from './helper'
-import behaviors from '../res/resPoints'
+import { adjustToCanvasLeft, adjustToCanvasTop, drawText } from './helpers'
+import behaviors from '../res/resizing'
 import './TextBlock.scss'
+import '../res/resizable.scss'
 
 let rowHeight = 0
 let removal = {
@@ -22,9 +23,9 @@ function TextBlock(props) {
     let newStyle = {
       bottom: '',
       height: '',
-      left: adjustLeft(props.x, canvas, ref.current) + 'px',
+      left: adjustToCanvasLeft(props.x, canvas, ref.current) + 'px',
       right: '',
-      top: adjustTop(props.y, canvas, ref.current) + 'px',
+      top: adjustToCanvasTop(props.y, canvas, ref.current) + 'px',
       width: '',
     }
 
@@ -38,7 +39,7 @@ function TextBlock(props) {
 
       drawText(canvas, textarea, rowHeight)
       if (removal.shouldRemove) {
-        props.setState({
+        props.setTextState({
           isWriting: false,
           x: -1,
           y: -1
@@ -154,12 +155,11 @@ function TextBlock(props) {
       event.persist()
       event.stopPropagation()
       const point = event.target
-      behaviors[item](event, setStyle)
       removal.shouldRemove = false
       removal.target = event.target
   
       function mouseMove(event) {
-        behaviors[item](event, setStyle)
+        behaviors[item](event, ref.current, setStyle, { height: 25, width: 25 })
       }
 
       document.addEventListener('mousemove', mouseMove)
@@ -192,7 +192,7 @@ function TextBlock(props) {
   })
 
   return (
-    <div className='text-block' style={style} ref={ref}
+    <div className='text-block resizable' style={style} ref={ref}
       onMouseDown={handleMouseDown}
       onClick={handleClick}>
       {points}

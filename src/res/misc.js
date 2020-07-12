@@ -1,10 +1,10 @@
-const helpers = [
-  'broom',
-  'bars'
+const misc = [
+  'fas+broom',
+  'fas+bars'
 ]
 
 const behaviors = {
-  'broom': (event) => {
+  'fas+broom': (event) => {
     event.stopPropagation()
     let canvas = document.getElementsByTagName('canvas')[0]
     let context = canvas.getContext('2d')
@@ -12,8 +12,8 @@ const behaviors = {
     context.fillRect(0, 0, canvas.width, canvas.height)
   },
 
-  'bars': () => {}
+  'fas+bars': () => {}
 }
 
-exports.helpers = helpers
+exports.misc = misc
 exports.behaviors = behaviors

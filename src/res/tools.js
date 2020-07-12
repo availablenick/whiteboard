@@ -1,11 +1,17 @@
-const tools = [
-  'pencil-alt',
-  'eraser',
-  'fill',
-  'font',
-  'eye-dropper',
-  'search'
-]
+const tools = {
+  'fas+pencil-alt': null,
+  'fas+eraser': null,
+  'fas+fill': null,
+  'fas+font': null,
+  'shapes': [
+    'fas+slash',
+    'far+square',
+    'far+circle'
+  ],
+
+  'fas+eye-dropper': null,
+  'fas+search': null
+}
 
 let c = document.createElement('canvas')
 c.height = 32
@@ -17,19 +23,22 @@ ctx.fillRect(1, 1, c.width - 2, c.height - 2)
 let dataURL = c.toDataURL()
 
 const cursors = {
-  'pencil-alt': 'cell',
-  eraser: 'url("' + dataURL + '"), auto',
-  fill: 'no-drop',
-  font: 'text',
-  'eye-dropper': 'alias',
-  search: 'cell',
-  'none': ''
+  'fas+pencil-alt': 'cell',
+  'fas+eraser': 'url("' + dataURL + '"), auto',
+  'fas+fill': 'no-drop',
+  'fas+font': 'text',
+  'fas+slash': 'crosshair',
+  'far+square': 'crosshair',
+  'far+circle': 'crosshair',
+  'fas+eye-dropper': 'alias',
+  'fas+search': 'cell',
+  'fas+none': ''
 }
 
 const behaviors = {
-  'pencil-alt': (event) => {
-    let canvas = event.target
-    let context = canvas.getContext('2d')
+  'fas+pencil-alt': (event) => {
+    const canvas = event.target
+    const context = canvas.getContext('2d')
     let x = event.clientX - canvas.offsetLeft
     let y = event.clientY - canvas.offsetTop
     let prevX = x - event.movementX
@@ -41,16 +50,16 @@ const behaviors = {
     } else {
       context.lineWidth = 2
       context.beginPath()
-      context.moveTo(prevX, prevY, 2, 2)
-      context.lineTo(x, y, 2, 2)
+      context.moveTo(prevX, prevY)
+      context.lineTo(x, y)
       context.stroke()
       context.closePath()
     }
   },
 
-  eraser: (event) => {
-    let canvas = event.target
-    let context = canvas.getContext('2d')
+  'fas+eraser': (event) => {
+    const canvas = event.target
+    const context = canvas.getContext('2d')
     let x = event.clientX - canvas.offsetLeft
     let y = event.clientY - canvas.offsetTop
     let prevX = x - event.movementX
@@ -112,10 +121,10 @@ const behaviors = {
     }
   },
 
-  fill: (event) => {
+  'fas+fill': (event) => {
     if (event.type === 'mousedown') {
-      let canvas = event.target
-      let context = canvas.getContext('2d')
+      const canvas = event.target
+      const context = canvas.getContext('2d')
       let initialX = event.clientX - canvas.offsetLeft
       let initialY = event.clientY - canvas.offsetTop
       let initialPixel = context.getImageData(initialX, initialY, 1, 1)
@@ -183,9 +192,9 @@ const behaviors = {
     }
   },
 
-  font: (event, setState) => {
+  'fas+font': (event, setTextState) => {
     if (event.type === 'click') {
-      setState({
+      setTextState({
         isWriting: true,
         x: event.clientX,
         y: event.clientY
@@ -193,10 +202,49 @@ const behaviors = {
     }
   },
 
-  'eye-dropper': (event) => {
+  'fas+slash': (event, setShapeState, prevShapeState) => {
+    if (event.type === 'mousemove') {
+      if (!prevShapeState.isShaping) {
+        setShapeState({
+          isShaping: true,
+          shape: 'segment',
+          x: event.clientX,
+          y: event.clientY
+        })
+      }
+    }
+  },
+  
+  'far+square': (event, setShapeState, prevShapeState) => {
+    if (event.type === 'mousemove') {
+      if (!prevShapeState.isShaping) {
+        setShapeState({
+          isShaping: true,
+          shape: 'rectangle',
+          x: event.clientX,
+          y: event.clientY
+        })
+      }
+    }
+  },
+
+  'far+circle': (event, setShapeState, prevShapeState) => {
+    if (event.type === 'mousemove') {
+      if (!prevShapeState.isShaping) {
+        setShapeState({
+          isShaping: true,
+          shape: 'circle',
+          x: event.clientX,
+          y: event.clientY
+        })
+      }
+    }
+  },
+
+  'fas+eye-dropper': (event) => {
     if (event.type === 'mousedown') {
-      let canvas = event.target
-      let context = canvas.getContext('2d')
+      const canvas = event.target
+      const context = canvas.getContext('2d')
       let x = event.clientX - canvas.offsetLeft
       let y = event.clientY - canvas.offsetTop
 
@@ -211,9 +259,10 @@ const behaviors = {
     }
   },
 
-  search: (event) => {
+  'fas+search': (event) => {
   
   },
+
   'none': () => {}
 }
 

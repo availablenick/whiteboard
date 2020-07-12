@@ -1,0 +1,11 @@
+#board-wrapper {
+  overflow: hidden;
+
+  canvas {
+    box-shadow: 10px 10px 20px black;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}

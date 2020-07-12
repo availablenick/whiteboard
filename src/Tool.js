@@ -6,28 +6,56 @@ function Tool(props) {
   const handleClick = (event) => {
     event.stopPropagation()
     let tool = props.icon
-    if (props.isSelected)
+    if (props.isSelected) {
       tool = 'none'
+    }
 
     props.setTool(tool)
-    props.setSidebarState(prevState => {
-      let newToolsInfo = prevState.toolsInfo.map(item => {
-        let value = false
-        if (item.name === props.icon)
-          value = !item.value
+    if (props.setSidebarState) {
+      props.setSidebarState(prevSidebarState => {
+        let newSidebarState = {}
+        for (let key in prevSidebarState) {
+          if (key === props.icon) {
+            newSidebarState[key] = !prevSidebarState[key]
+          } else {
+            newSidebarState[key] = false
+          }
+        }
 
-        return { name: item.name, value: value }
+        return newSidebarState
       })
+    } else {
+      if (!props.isSelected) {
+        props.setGroupIcon(tool.split('+'))
+        props.setGroupState(prevGroupState => {
+          let newGroupState = {}
+          for (let key in prevGroupState) {
+            if (key === props.icon) {
+              newGroupState[key] = !prevGroupState[key]
+            } else {
+              newGroupState[key] = false
+            }
+          }
 
-      return { toolsInfo: newToolsInfo }
-    })
+          return newGroupState
+        })
+      }
+    }
+  }
+
+  let style = {}
+  if (props.isSelected) {
+    style = {
+      background: 'white',
+      color: 'black'
+    }
   }
 
   return (
     <span
-      className='tool d-inline-block w-100' style={props.style}
+      className='tool d-inline-block w-100' style={style}
       onClick={handleClick}>
-      <FontAwesomeIcon icon={props.icon} />
+      <FontAwesomeIcon icon={props.icon.split('+')} />
     </span>
   )
 }

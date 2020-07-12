@@ -3,7 +3,11 @@ aside {
   box-shadow: 0 0 3px black;
   text-align: center;
   z-index: 10;
-
+  
+  ul {
+    width: 3em;
+  }
+ 
   .tools-list li {
     border-bottom: 1px solid #333;
     list-style-type: none;
@@ -13,7 +17,7 @@ aside {
     }
   }
 
-  .helpers-list li {
+  .misc-list li {
     list-style-type: none;
     padding: 0.25em 0;
   }
