@@ -94,9 +94,9 @@ function TextBlock(props) {
     }
 
     document.addEventListener('mousemove', handleMouseMove)
-    ref.current.onmouseup = () => {
+    document.onmouseup = () => {
       document.removeEventListener('mousemove', handleMouseMove)
-      ref.current.onmouseup = null
+      document.onmouseup = null
       removal.shouldRemove = true
       removal.target = null
     }
@@ -163,9 +163,9 @@ function TextBlock(props) {
       }
 
       document.addEventListener('mousemove', mouseMove)
-      point.onmouseup = () => {
+      document.onmouseup = () => {
         document.removeEventListener('mousemove', mouseMove)
-        point.onmouseup = null
+        document.onmouseup = null
         setStyle({
           bottom: '',
           height: ref.current.offsetHeight,
