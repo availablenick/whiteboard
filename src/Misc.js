@@ -6,8 +6,8 @@ import './Misc.scss'
 function Misc(props) {
   return (
     <span
-      className='misc d-inline-flex align-items-center justify-content-center'
-      onClick={behaviors[props.icon]}>
+      className='misc circular d-inline-flex align-items-center justify-content-center'
+      onClick={behaviors[props.name]}>
       <FontAwesomeIcon icon={props.icon.split('+')} />
     </span>
   )

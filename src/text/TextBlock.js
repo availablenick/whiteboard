@@ -11,7 +11,7 @@ let removal = {
 }
 
 function TextBlock(props) {
-  const canvas = document.getElementsByTagName('canvas')[0]
+  const canvas = document.getElementById('canvas')
   const ref = useRef(null)
   let initialStyle = {
     left: '-500px',
@@ -37,6 +37,9 @@ function TextBlock(props) {
         return
       }
 
+      const context = canvas.getContext('2d')
+      context.fillStyle = props.config.drawing.color
+      context.strokeStyle = props.config.drawing.color
       drawText(canvas, textarea, rowHeight)
       if (removal.shouldRemove) {
         props.setTextState({
@@ -196,7 +199,7 @@ function TextBlock(props) {
       onMouseDown={handleMouseDown}
       onClick={handleClick}>
       {points}
-      <textarea rows='1' cols='7'
+      <textarea rows='1' cols='7' style={{ color: props.config.drawing.color }}
         onMouseDown={(event) => { event.stopPropagation() }}
         onChange={handleChange}></textarea>
     </div>

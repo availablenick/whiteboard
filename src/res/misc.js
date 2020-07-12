@@ -1,19 +1,25 @@
 const misc = [
-  'fas+broom',
-  'fas+bars'
+  'broom',
+  'bars',
 ]
 
+const icons = {
+  'broom': 'fas+broom',
+  'bars': 'fas+bars'
+}
+
 const behaviors = {
-  'fas+broom': (event) => {
+  'broom': (event) => {
     event.stopPropagation()
-    let canvas = document.getElementsByTagName('canvas')[0]
+    let canvas = document.getElementById('canvas')
     let context = canvas.getContext('2d')
     context.fillStyle = '#fff'
     context.fillRect(0, 0, canvas.width, canvas.height)
   },
 
-  'fas+bars': () => {}
+  'bars': () => {}
 }
 
 exports.misc = misc
+exports.icons = icons
 exports.behaviors = behaviors

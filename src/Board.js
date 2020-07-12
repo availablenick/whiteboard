@@ -22,34 +22,42 @@ function Board(props) {
     ctx.fillRect(0, 0, props.width, props.height)
   }, [])
 
+  let params = {
+    config: props.config,
+    prevShapeState: shapeState,
+    setConfig: props.setConfig,
+    setShapeState: setShapeState,
+    setTextState: setTextState,
+  }
+
   const handleClick = (event) => {
     if (!textState.isWriting) {
-      behaviors[props.tool](event, setTextState)
+      behaviors[props.tool](event, params)
     }
   }
 
   const handleMouseDown = (event) => {
     if (event.button === 0) {
-      behaviors[props.tool](event)
+      behaviors[props.tool](event, params)
     }
   }
 
   const handleMouseMove = (event) => {
     if (event.buttons === 1) {
-      behaviors[props.tool](event, setShapeState, shapeState)
+      behaviors[props.tool](event, params)
     }
   }
 
   let shapes = {}
   if (shapeState.isShaping) {
     shapes.segment = <Segment x={shapeState.x} y={shapeState.y}
-      setShapeState={setShapeState} />
+      config={props.config} setShapeState={setShapeState} />
 
     shapes.rectangle = <Rectangle x={shapeState.x} y={shapeState.y}
-      setShapeState={setShapeState} />
+      config={props.config} setShapeState={setShapeState} />
 
     shapes.circle = <Circle x={shapeState.x} y={shapeState.y}
-      setShapeState={setShapeState} />
+      config={props.config} setShapeState={setShapeState} />
   }
 
   return (
@@ -57,7 +65,7 @@ function Board(props) {
       className='bg-dark d-flex flex-grow-1 align-items-center
         justify-content-center h-100'>
 
-      <canvas className='m-5' width={props.width} height={props.height}
+      <canvas id='canvas' className='m-5' width={props.width} height={props.height}
         ref={ref}
         style={{ cursor: cursors[props.tool], boxShadow: '10px 10px 20px black' }}
         onClick={handleClick}
@@ -67,15 +75,11 @@ function Board(props) {
         No support for canvas.
       </canvas>
 
-      {/* <div className='line-shape'>
-        <div className='res left'></div>
-        <div className='res right'></div>
-      </div> */}
-
       {shapeState.isShaping && shapes[shapeState.shape]}
 
       {textState.isWriting &&
-        <TextBlock x={textState.x} y={textState.y} setTextState={setTextState} />
+        <TextBlock x={textState.x} y={textState.y} config={props.config}
+          setTextState={setTextState} />
       }
     </div>
   )

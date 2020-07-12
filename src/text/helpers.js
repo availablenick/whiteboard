@@ -26,7 +26,6 @@ const drawText = (canvas, textarea, rowHeight) => {
   let text = textarea.value
   if (text !== '') {
     let context = canvas.getContext('2d')
-    context.fillStyle = '#000'
     context.font = window.getComputedStyle(textarea).getPropertyValue('font')
 
     let textareaRect = textarea.getBoundingClientRect()

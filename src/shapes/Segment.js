@@ -3,7 +3,7 @@ import { calculateAngle, distance } from './helpers'
 import './Segment.scss'
 
 function Segment(props) {
-  const canvas = document.getElementsByTagName('canvas')[0]
+  const canvas = document.getElementById('canvas')
   const ref = useRef(null)
   let initialStyle = {
     left: '-500px',
@@ -19,6 +19,7 @@ function Segment(props) {
 
   useEffect(() => {
     let newStyle = {
+      background: props.config.drawing.color,
       left: props.x + 'px',
       top: props.y + 'px',
       transformOrigin: 'left center',
@@ -30,7 +31,8 @@ function Segment(props) {
       const ctx = canvas.getContext('2d')
       const leftR = ref.current.getElementsByClassName('left')[0].getBoundingClientRect()
       const rightR = ref.current.getElementsByClassName('right')[0].getBoundingClientRect()
-      ctx.strokeStyle = '#000'
+      ctx.fillStyle = props.config.drawing.color
+      ctx.strokeStyle = props.config.drawing.color
       ctx.lineWidth = 4
       ctx.beginPath()
       ctx.moveTo(leftR.x - canvas.offsetLeft, leftR.y - canvas.offsetTop)

@@ -1,11 +1,18 @@
 .misc {
-  border-radius: 50%;
   height: 2em;
   width: 2em;
+}
+
+.circular {
+  border-radius: 50%;
 
   &:hover {
     background: #ddd;
     color: black;
     cursor: pointer;
+
+    .highlightable {
+      border: 2px solid black;
+    }
   }
 }

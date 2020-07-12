@@ -1,0 +1,50 @@
+.color-picker {
+  background: linear-gradient(to bottom, #111, #333);
+  bottom: 0;
+  box-shadow: 0 0 3px black;
+  height: calc(7em + 10vw);
+  left: 100%;
+  width: calc(17em + 10vw);
+
+  .viewer {
+    background: black;
+    flex: 2;
+  }
+
+  .bottom {
+    flex: 10;
+  }
+
+  .light-changer {
+    flex: 11;
+
+    .selector {
+      border: 1px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 4px rgb(0, 0, 0);
+      height: 0.75em;
+      width: 0.75em;
+    }
+  }
+
+  .alpha-changer {
+    cursor: grab;
+    flex: 1;
+  }
+
+  .color-changer {
+    background: linear-gradient(to bottom, red, yellow, lime, aqua,
+      blue, magenta, red);
+
+    cursor: grab;
+    flex: 1;
+  }
+
+  .slider {
+    background: white;
+    box-shadow: 0 0 2px rgb(0, 0, 0);
+    height: 1px;
+    left: -15%;
+    width: 130%;
+  }
+}

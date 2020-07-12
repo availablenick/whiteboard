@@ -5,7 +5,7 @@ import './Circle.scss'
 import '../res/resizable.scss'
 
 function Circle(props) {
-  const canvas = document.getElementsByTagName('canvas')[0]
+  const canvas = document.getElementById('canvas')
   const ref = useRef(null)
   let initialStyle = {
     left: '-500px',
@@ -16,6 +16,7 @@ function Circle(props) {
   let [stage, setStage] = useState('shaping')
   useEffect(() => {
     let newStyle = {
+      border: '4px solid ' + props.config.drawing.color,
       height: 0,
       left: props.x + 'px',
       top: props.y + 'px',
@@ -26,7 +27,8 @@ function Circle(props) {
     return () => {
       const ctx = canvas.getContext('2d')
       const rect = ref.current.getBoundingClientRect()
-      ctx.strokeStyle = '#000'
+      ctx.fillStyle = props.config.drawing.color
+      ctx.strokeStyle = props.config.drawing.color
       ctx.lineWidth = 4
       ctx.beginPath()
       ctx.ellipse(

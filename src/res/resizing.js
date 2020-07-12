@@ -1,6 +1,6 @@
 const behaviors = {
   top: (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     let offsetBottom = element.offsetTop + element.offsetHeight
     let oldHeight = element.offsetHeight
     let newHeight = offsetBottom - event.clientY
@@ -28,7 +28,7 @@ const behaviors = {
   },
 
   'top-right': (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     let offsetBottom = element.offsetTop + element.offsetHeight
     let oldHeight = element.offsetHeight
     let newHeight = offsetBottom - event.clientY
@@ -72,7 +72,7 @@ const behaviors = {
   },
 
   right: (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     if (event.type === 'mousemove') {
       let offsetRight = element.offsetLeft + element.offsetWidth
       let oldWidth = element.offsetWidth
@@ -102,7 +102,7 @@ const behaviors = {
   },
 
   'bottom-right': (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     if (event.type === 'mousemove') {
       let offsetBottom = element.offsetTop + element.offsetHeight
       let oldHeight = element.offsetHeight
@@ -148,7 +148,7 @@ const behaviors = {
   },
 
   bottom: (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     if (event.type === 'mousemove') {
       let offsetBottom = element.offsetTop + element.offsetHeight
       let oldHeight = element.offsetHeight
@@ -178,7 +178,7 @@ const behaviors = {
   },
 
   'bottom-left': (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     let offsetBottom = element.offsetTop + element.offsetHeight
     let oldHeight = element.offsetHeight
     let newHeight = event.clientY - element.offsetTop
@@ -222,7 +222,7 @@ const behaviors = {
   },
 
   left: (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     let offsetRight = element.offsetLeft + element.offsetWidth
     let oldWidth = element.offsetWidth
     let newWidth = offsetRight - event.clientX
@@ -250,7 +250,7 @@ const behaviors = {
   },
 
   'top-left': (event, element, setStyle, bound) => {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    const canvas = document.getElementById('canvas')
     let offsetBottom = element.offsetTop + element.offsetHeight
     let oldHeight = element.offsetHeight
     let newHeight = offsetBottom - event.clientY

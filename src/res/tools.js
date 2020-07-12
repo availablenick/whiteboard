@@ -36,7 +36,7 @@ const cursors = {
 }
 
 const behaviors = {
-  'fas+pencil-alt': (event) => {
+  'fas+pencil-alt': (event, params) => {
     const canvas = event.target
     const context = canvas.getContext('2d')
     let x = event.clientX - canvas.offsetLeft
@@ -44,8 +44,9 @@ const behaviors = {
     let prevX = x - event.movementX
     let prevY = y - event.movementY
 
+    context.fillStyle = params.config.drawing.color
+    context.strokeStyle = params.config.drawing.color
     if (event.type === 'mousedown') {
-      context.fillStyle = '#000'
       context.fillRect(x, y, 2, 2)
     } else {
       context.lineWidth = 2
@@ -57,7 +58,7 @@ const behaviors = {
     }
   },
 
-  'fas+eraser': (event) => {
+  'fas+eraser': (event, params) => {
     const canvas = event.target
     const context = canvas.getContext('2d')
     let x = event.clientX - canvas.offsetLeft
@@ -65,7 +66,8 @@ const behaviors = {
     let prevX = x - event.movementX
     let prevY = y - event.movementY
 
-    context.fillStyle = 'green'
+    context.fillStyle = params.config.erasing.color
+    context.strokeStyle = params.config.erasing.color
     if (event.type === 'mousedown') {
       context.fillRect(x, y, 32, 32)
     } else {
@@ -121,7 +123,7 @@ const behaviors = {
     }
   },
 
-  'fas+fill': (event) => {
+  'fas+fill': (event, params) => {
     if (event.type === 'mousedown') {
       const canvas = event.target
       const context = canvas.getContext('2d')
@@ -146,9 +148,10 @@ const behaviors = {
         return 0
       }
 
-      let paintingColor = 'rgb(0, 0, 255)'
-      context.fillStyle = paintingColor
-      if (compareColors(initialColor, paintingColor) === 0)
+      //let paintingColor = 'rgb(0, 0, 255)'
+      context.fillStyle = params.config.drawing.color
+      context.strokeStyle = params.config.drawing.color
+      if (compareColors(initialColor, params.config.drawing.color) === 0)
         return
 
       let grid = []
@@ -192,9 +195,9 @@ const behaviors = {
     }
   },
 
-  'fas+font': (event, setTextState) => {
+  'fas+font': (event, params) => {
     if (event.type === 'click') {
-      setTextState({
+      params.setTextState({
         isWriting: true,
         x: event.clientX,
         y: event.clientY
@@ -202,10 +205,10 @@ const behaviors = {
     }
   },
 
-  'fas+slash': (event, setShapeState, prevShapeState) => {
+  'fas+slash': (event, params) => {
     if (event.type === 'mousemove') {
-      if (!prevShapeState.isShaping) {
-        setShapeState({
+      if (!params.prevShapeState.isShaping) {
+        params.setShapeState({
           isShaping: true,
           shape: 'segment',
           x: event.clientX,
@@ -214,11 +217,11 @@ const behaviors = {
       }
     }
   },
-  
-  'far+square': (event, setShapeState, prevShapeState) => {
+
+  'far+square': (event, params) => {
     if (event.type === 'mousemove') {
-      if (!prevShapeState.isShaping) {
-        setShapeState({
+      if (!params.prevShapeState.isShaping) {
+        params.setShapeState({
           isShaping: true,
           shape: 'rectangle',
           x: event.clientX,
@@ -228,10 +231,10 @@ const behaviors = {
     }
   },
 
-  'far+circle': (event, setShapeState, prevShapeState) => {
+  'far+circle': (event, params) => {
     if (event.type === 'mousemove') {
-      if (!prevShapeState.isShaping) {
-        setShapeState({
+      if (!params.prevShapeState.isShaping) {
+        params.setShapeState({
           isShaping: true,
           shape: 'circle',
           x: event.clientX,
@@ -241,7 +244,7 @@ const behaviors = {
     }
   },
 
-  'fas+eye-dropper': (event) => {
+  'fas+eye-dropper': (event, params) => {
     if (event.type === 'mousedown') {
       const canvas = event.target
       const context = canvas.getContext('2d')
@@ -255,12 +258,19 @@ const behaviors = {
         pixel.data[2] + ', ' +
         (pixel.data[3] / 255) + ')'
 
-      console.log(color)
+      params.setConfig(prevConfig => {
+        return {
+          ...prevConfig,
+          drawing: {
+            color: color
+          }
+        }
+      })
     }
   },
 
-  'fas+search': (event) => {
-  
+  'fas+search': (event, params) => {
+
   },
 
   'none': () => {}

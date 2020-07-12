@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
+import Color from './color/Color'
 import Group from './Group'
 import Misc from './Misc'
 import Tool from './Tool'
-import { misc } from './res/misc'
+import { misc, icons as miscIcons } from './res/misc'
 import { tools } from './res/tools'
 import './Sidebar.scss'
 
@@ -40,7 +41,8 @@ function Sidebar(props) {
   })
 
   let miscList = misc.map(item => {
-    return <li key={item}><Misc icon={item} /></li>
+    return <li key={item}><Misc name={item} icon={miscIcons[item]}
+      config={props.config} setConfig={props.setConfig} /></li>
   })
 
   const handleClick = () => {
@@ -63,6 +65,9 @@ function Sidebar(props) {
       </ul>
 
       <ul className='misc-list p-0'>
+        <li>
+          <Color config={props.config} setConfig={props.setConfig} />
+        </li>
         {miscList}
       </ul>
     </aside>
