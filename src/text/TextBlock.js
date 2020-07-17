@@ -92,8 +92,13 @@ function TextBlock(props) {
         yPos = canvasBottom - ref.current.offsetHeight
       }
 
-      ref.current.style.left = xPos + 'px'
-      ref.current.style.top = yPos + 'px'
+      setStyle(prevStyle => {
+        return {
+          ...prevStyle,
+          left: xPos + 'px',
+          top: yPos + 'px'
+        }
+      })
     }
 
     document.addEventListener('mousemove', handleMouseMove)
@@ -130,13 +135,19 @@ function TextBlock(props) {
     if (rows > Number(textarea.rows)) {
       let canvasBottom = canvas.offsetTop + canvas.offsetHeight
       let topWithBorder = ref.current.offsetTop + 2 * ref.current.clientTop
+      let blockHeight = ''
       if (topWithBorder + rows * rowHeight > canvasBottom) {
         let height = canvasBottom - topWithBorder
         rows = Math.floor(height / rowHeight)
-        ref.current.style.height = height + 'px'
-      } else {
-        ref.current.style.height = ''
+        blockHeight = height + 'px'
       }
+
+      setStyle(prevStyle => {
+        return {
+          ...prevStyle,
+          height: blockHeight
+        }
+      })
 
       textarea.rows = rows
     }
