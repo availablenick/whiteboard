@@ -148,6 +148,7 @@ function Rectangle(props) {
         document.onmousemove = null
         document.onmouseup = null
         setStyle({
+          ...style,
           bottom: '',
           height: ref.current.offsetHeight,
           left: ref.current.offsetLeft + 'px',

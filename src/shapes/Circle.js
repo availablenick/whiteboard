@@ -154,6 +154,7 @@ function Circle(props) {
         document.removeEventListener('mousemove', mouseMove)
         document.onmouseup = null
         setStyle({
+          ...style,
           bottom: '',
           height: ref.current.offsetHeight,
           left: ref.current.offsetLeft + 'px',
