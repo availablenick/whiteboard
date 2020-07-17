@@ -26,11 +26,13 @@ function Segment(props) {
       width: 0
     }
 
+    const lineShape = ref.current
     setStyle(newStyle)
+
     return () => {
       const ctx = canvas.getContext('2d')
-      const leftR = ref.current.getElementsByClassName('left')[0].getBoundingClientRect()
-      const rightR = ref.current.getElementsByClassName('right')[0].getBoundingClientRect()
+      const leftR = lineShape.getElementsByClassName('left')[0].getBoundingClientRect()
+      const rightR = lineShape.getElementsByClassName('right')[0].getBoundingClientRect()
       ctx.fillStyle = props.config.drawing.color
       ctx.strokeStyle = props.config.drawing.color
       ctx.lineWidth = 4

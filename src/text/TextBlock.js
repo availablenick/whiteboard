@@ -157,7 +157,6 @@ function TextBlock(props) {
     function resMouseDown(event) {
       event.persist()
       event.stopPropagation()
-      const point = event.target
       removal.shouldRemove = false
       removal.target = event.target
   

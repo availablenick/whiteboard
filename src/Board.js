@@ -20,7 +20,7 @@ function Board(props) {
     const ctx = ref.current.getContext('2d')
     ctx.fillStyle = '#fff'
     ctx.fillRect(0, 0, props.width, props.height)
-  }, [])
+  }, [props.width, props.height])
 
   let params = {
     config: props.config,

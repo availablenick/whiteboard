@@ -26,15 +26,18 @@ const ColorPicker = forwardRef((props, ref) => {
   )
 
   useEffect(() => {
-    let [selectorX, selectorY] = getSelectorPosFromColor(selectorColor)
-    let colorSliderY = getSliderPosFromColor(sliderColor)
+    let [selectorX, selectorY] = getSelectorPosFromColor(props.config[props.type].color)
+    let colorSliderY = getSliderPosFromColor(
+      getSliderColorFromSelectorColor(props.config[props.type].color)
+    )
+
     let selectorLeft = lightChangerRef.current.offsetWidth * selectorX -
       selectorRef.current.offsetWidth / 2
 
     let selectorTop = lightChangerRef.current.offsetHeight * selectorY -
       selectorRef.current.offsetHeight / 2
 
-    let m = /rgba?\((\d+), (\d+), (\d+)(, (\d+)(\.\d+)?)?\)/.exec(selectorColor)
+    let m = /rgba?\((\d+), (\d+), (\d+)(, (\d+)(\.\d+)?)?\)/.exec(props.config[props.type].color)
     let alphaSliderTop = 1
     if (m[4]) {
       let alpha = Number(m[5] + m[6])
@@ -42,6 +45,7 @@ const ColorPicker = forwardRef((props, ref) => {
     }
 
     let colorSliderTop = colorChangerRef.current.offsetHeight * colorSliderY
+
     setSelectorStyle({
       left: selectorLeft + 'px',
       top: selectorTop + 'px'

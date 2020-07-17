@@ -23,10 +23,12 @@ function Circle(props) {
       width: 0
     }
 
+    const circShape = ref.current
     setStyle(newStyle)
+
     return () => {
       const ctx = canvas.getContext('2d')
-      const rect = ref.current.getBoundingClientRect()
+      const rect = circShape.getBoundingClientRect()
       ctx.fillStyle = props.config.drawing.color
       ctx.strokeStyle = props.config.drawing.color
       ctx.lineWidth = 4
