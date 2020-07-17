@@ -30,6 +30,9 @@ function Segment(props) {
     setStyle(newStyle)
 
     return () => {
+      document.onmousemove = null
+      document.onmouseup = null
+
       const ctx = canvas.getContext('2d')
       const leftR = lineShape.getElementsByClassName('left')[0].getBoundingClientRect()
       const rightR = lineShape.getElementsByClassName('right')[0].getBoundingClientRect()
@@ -72,9 +75,9 @@ function Segment(props) {
   }, [state])
 
   const handleMouseDown = (event) => {
-    let handleMouseMove = null
+    event.preventDefault()
     if (/shaping/.test(state.stage)) {
-      handleMouseMove = (event) => {
+      document.onmousemove = (event) => {
         event.stopPropagation()
         let q = { x: event.clientX, y: event.clientY }
 
@@ -110,7 +113,7 @@ function Segment(props) {
       const rect = ref.current.getBoundingClientRect()
       let shiftX = event.clientX - rect.left
       let shiftY = event.clientY - rect.top
-      handleMouseMove = (event) => {
+      document.onmousemove = (event) => {
         let xPos = event.clientX - shiftX
         let yPos = event.clientY - shiftY
         let canvasRight = canvas.offsetLeft + canvas.offsetWidth
@@ -137,9 +140,8 @@ function Segment(props) {
       }
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
     document.onmouseup = () => {
-      document.removeEventListener('mousemove', handleMouseMove)
+      document.onmousemove = null
       document.onmouseup = null
       if (/shaping/.test(state.stage)) {
         setState({
@@ -153,6 +155,7 @@ function Segment(props) {
   let positions = ['left', 'right']
   let points = positions.map(position => {
     const resMouseDown = (event) => {
+      event.preventDefault()
       event.stopPropagation()
       const pointRect = event.target.getBoundingClientRect()
       const segRect = ref.current.getBoundingClientRect()

@@ -27,6 +27,9 @@ function Circle(props) {
     setStyle(newStyle)
 
     return () => {
+      document.onmousemove = null
+      document.onmouseup = null
+
       const ctx = canvas.getContext('2d')
       const rect = circShape.getBoundingClientRect()
       ctx.fillStyle = props.config.drawing.color
@@ -69,8 +72,8 @@ function Circle(props) {
   }, [stage])
 
   const handleMouseDown = (event) => {
+    event.preventDefault()
     event.stopPropagation()
-    let handleMouseMove = null
     if (/shaping/.test(stage)) {
       event.persist()
       let p = { x: props.x, y: props.y }
@@ -81,15 +84,15 @@ function Circle(props) {
         4: 'bottom-right'
       }
 
-      handleMouseMove = (eventz) => {
-        let q = { x: eventz.clientX, y: eventz.clientY }
-        behaviors[corners[getQuadrant(p, q)]](eventz, ref.current, setStyle,
+      document.onmousemove = (event) => {
+        let q = { x: event.clientX, y: event.clientY }
+        behaviors[corners[getQuadrant(p, q)]](event, ref.current, setStyle,
           { height: 0, width: 0 })
       }
     } else {
       let shiftX = event.clientX - ref.current.offsetLeft
       let shiftY = event.clientY - ref.current.offsetTop
-      handleMouseMove = (event) => {
+      document.onmousemove = (event) => {
         let xPos = event.clientX - shiftX
         let yPos = event.clientY - shiftY
         let canvasRight = canvas.offsetLeft + canvas.offsetWidth
@@ -116,9 +119,8 @@ function Circle(props) {
       }
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
-    document.onmouseup = (event) => {
-      document.removeEventListener('mousemove', handleMouseMove)
+    document.onmouseup = () => {
+      document.onmousemove = null
       document.onmouseup = null
       if (/shaping/.test(stage)) {
         setStage('positioning')
@@ -139,6 +141,7 @@ function Circle(props) {
 
   let points = positions.map(item => {
     function resMouseDown(event) {
+      event.preventDefault()
       event.persist()
       event.stopPropagation()
   

@@ -27,6 +27,9 @@ function Rectangle(props) {
     setStyle(newStyle)
 
     return () => {
+      document.onmousemove = null
+      document.onmouseup = null
+
       const ctx = canvas.getContext('2d')
       const rect = rectShape.getBoundingClientRect()
       ctx.fillStyle = props.config.drawing.color
@@ -64,8 +67,8 @@ function Rectangle(props) {
   }, [stage])
 
   const handleMouseDown = (event) => {
+    event.preventDefault()
     event.stopPropagation()
-    let handleMouseMove = null
     if (/shaping/.test(stage)) {
       event.persist()
       let p = { x: props.x, y: props.y }
@@ -76,7 +79,7 @@ function Rectangle(props) {
         4: 'bottom-right'
       }
 
-      handleMouseMove = (eventz) => {
+      document.onmousemove = (eventz) => {
         let q = { x: eventz.clientX, y: eventz.clientY }
         behaviors[corners[getQuadrant(p, q)]](eventz, ref.current, setStyle,
           { height: 0, width: 0 })
@@ -84,7 +87,7 @@ function Rectangle(props) {
     } else {
       let shiftX = event.clientX - ref.current.offsetLeft
       let shiftY = event.clientY - ref.current.offsetTop
-      handleMouseMove = (event) => {
+      document.onmousemove = (event) => {
         let xPos = event.clientX - shiftX
         let yPos = event.clientY - shiftY
         let canvasRight = canvas.offsetLeft + canvas.offsetWidth
@@ -111,9 +114,8 @@ function Rectangle(props) {
       }
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
-    document.onmouseup = (event) => {
-      document.removeEventListener('mousemove', handleMouseMove)
+    document.onmouseup = () => {
+      document.onmousemove = null
       document.onmouseup = null
       if (/shaping/.test(stage)) {
         setStage('positioning')
@@ -134,16 +136,16 @@ function Rectangle(props) {
 
   let points = positions.map(item => {
     function resMouseDown(event) {
+      event.preventDefault()
       event.persist()
       event.stopPropagation()
   
-      function mouseMove(event) {
+      document.onmousemove = (event) => {
         behaviors[item](event, ref.current, setStyle, { height: 1, width: 1 })
       }
 
-      document.addEventListener('mousemove', mouseMove)
       document.onmouseup = () => {
-        document.removeEventListener('mousemove', mouseMove)
+        document.onmousemove = null
         document.onmouseup = null
         setStyle({
           bottom: '',

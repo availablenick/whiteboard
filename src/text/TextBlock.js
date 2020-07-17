@@ -57,6 +57,8 @@ function TextBlock(props) {
     textarea.focus()
 
     return () => {
+      document.onmousemove = null
+      document.onmouseup = null
       document.removeEventListener('click', handleDocClick)
     }
   }, [])
@@ -69,13 +71,14 @@ function TextBlock(props) {
   }
 
   const handleMouseDown = (event) => {
+    event.preventDefault()
     event.persist()
     let shiftX = event.clientX - ref.current.offsetLeft
     let shiftY = event.clientY - ref.current.offsetTop
     removal.shouldRemove = false
     removal.target = ref.current
 
-    function handleMouseMove(event) {
+    document.onmousemove = (event) => {
       let xPos = event.clientX - shiftX
       let yPos = event.clientY - shiftY
       let canvasRight = canvas.offsetLeft + canvas.offsetWidth
@@ -101,9 +104,8 @@ function TextBlock(props) {
       })
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
     document.onmouseup = () => {
-      document.removeEventListener('mousemove', handleMouseMove)
+      document.onmousemove = null
       document.onmouseup = null
       removal.shouldRemove = true
       removal.target = null
@@ -166,18 +168,18 @@ function TextBlock(props) {
 
   let points = positions.map(item => {
     function resMouseDown(event) {
+      event.preventDefault()
       event.persist()
       event.stopPropagation()
       removal.shouldRemove = false
       removal.target = event.target
   
-      function mouseMove(event) {
+      document.onmousemove = (event) => {
         behaviors[item](event, ref.current, setStyle, { height: 25, width: 25 })
       }
 
-      document.addEventListener('mousemove', mouseMove)
       document.onmouseup = () => {
-        document.removeEventListener('mousemove', mouseMove)
+        document.onmousemove = null
         document.onmouseup = null
         setStyle({
           bottom: '',
