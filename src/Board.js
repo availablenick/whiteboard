@@ -39,7 +39,7 @@ function Board(props) {
     } else {
       setCursor(cursors[props.tool])
     }
-  }, [props.tool, props.config.eraser.size])
+  }, [props.tool, props.config.eraser.size, props.config.erasing.color])
 
   const handleClick = (event) => {
     if (!textState.isWriting) {
