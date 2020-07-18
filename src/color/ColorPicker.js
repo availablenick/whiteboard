@@ -38,9 +38,13 @@ const ColorPicker = forwardRef((props, ref) => {
       selectorRef.current.offsetHeight / 2
 
     let m = /rgba?\((\d+), (\d+), (\d+)(, (\d+)(\.\d+)?)?\)/.exec(props.config[props.type].color)
-    let alphaSliderTop = 1
+    let alphaSliderTop = 0
     if (m[4]) {
-      let alpha = Number(m[5] + m[6])
+      let alpha = Number(m[5])
+      if (m[6]) {
+        alpha = Number(m[5] + m[6])
+      }
+
       alphaSliderTop = alphaChangerRef.current.offsetHeight * (1 - alpha)
     }
 
