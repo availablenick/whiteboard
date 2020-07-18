@@ -4,10 +4,10 @@ import './Tool.scss'
 
 function Tool(props) {
   const handleClick = (event) => {
+    const canvas = document.getElementById('canvas')
+    canvas.focus()
     event.stopPropagation()
-    let tool = props.name
-
-    props.setTool(tool)
+    props.setTool(props.name)
     if (props.setSidebarState && !props.isSelected) {
       props.setSidebarState(prevSidebarState => {
         let newSidebarState = {}

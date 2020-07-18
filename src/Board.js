@@ -27,6 +27,7 @@ function Board(props) {
   }
 
   useEffect(() => {
+    ref.current.focus()
     const ctx = ref.current.getContext('2d')
     ctx.fillStyle = '#fff'
     ctx.fillRect(0, 0, props.width, props.height)

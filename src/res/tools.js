@@ -77,7 +77,7 @@ const behaviors = {
 
   eraser: (event, params) => {
     if (event.type === 'keydown') {
-      if (event.shiftKey) {
+      if (event.shiftKey && !event.ctrlKey) {
         if (event.key === '+') {
           let newSize = params.config.eraser.size + 1
           if (newSize > 48) {
