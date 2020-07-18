@@ -127,71 +127,9 @@ const behaviors = {
     if (event.type === 'mousedown') {
       const canvas = event.target
       const context = canvas.getContext('2d')
-      let initialX = event.clientX - canvas.offsetLeft
-      let initialY = event.clientY - canvas.offsetTop
-      let initialPixel = context.getImageData(initialX, initialY, 1, 1)
-      let initialColor = 'rgb(' +
-          initialPixel.data[0] + ', ' +
-          initialPixel.data[1] + ', ' +
-          initialPixel.data[2] + ')'
-
-      const compareColors = (c1, c2) => {
-        let regex = /\((\d+), (\d+), (\d+)\)/i
-        let m1 = regex.exec(c1)
-        regex.lastIndex = 0
-        let m2 = regex.exec(c2)
-        for (let i = 1; i < 4; i++) {
-          if (Math.abs(m1[i] - m2[i]) > 10)
-            return -1
-        }
-
-        return 0
-      }
-
-      //let paintingColor = 'rgb(0, 0, 255)'
       context.fillStyle = params.config.drawing.color
       context.strokeStyle = params.config.drawing.color
-      if (compareColors(initialColor, params.config.drawing.color) === 0)
-        return
-
-      let grid = []
-      for (let i = 0; i < canvas.width; i++) {
-        grid[i] = []
-        for (let j = 0; j < canvas.height; j++) {
-          grid[i][j] = false
-        }
-      }
-
-      let queue = [[initialX, initialY]]
-      while (queue.length > 0) {
-        let [x, y] = queue.shift()
-        context.fillRect(x, y, 1, 1)
-        let neighbors = [
-          [x - 1, y],
-          [x + 1, y],
-          [x, y + 1],
-          [x, y - 1]
-        ]
-
-        for (let [nextX, nextY] of neighbors) {
-          if (0 <= nextX && nextX < canvas.width &&
-            0 <= nextY && nextY < canvas.height) {
-
-            let pixel = context.getImageData(nextX, nextY, 1, 1)
-            let color = 'rgb(' +
-              pixel.data[0] + ', ' +
-              pixel.data[1] + ', ' +
-              pixel.data[2] + ')'
-
-            if (grid[nextX][nextY] === false &&
-                compareColors(color, initialColor) === 0) {
-
-              grid[nextX][nextY] = true
-              queue.push([nextX, nextY])
-            }
-          }
-        }
-      }
+      context.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight)
     }
   },
 
