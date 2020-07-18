@@ -8,6 +8,7 @@ import './Board.scss'
 
 function Board(props) {
   const ref = useRef(null)
+  let [cursor, setCursor] = useState('')
   let [textState, setTextState] = useState({
     isWriting: false,
   })
@@ -16,19 +17,28 @@ function Board(props) {
     isShaping: false,
   })
 
+  let params = {
+    config: props.config,
+    prevShapeState: shapeState,
+    setConfig: props.setConfig,
+    setCursor: setCursor,
+    setShapeState: setShapeState,
+    setTextState: setTextState,
+  }
+
   useEffect(() => {
     const ctx = ref.current.getContext('2d')
     ctx.fillStyle = '#fff'
     ctx.fillRect(0, 0, props.width, props.height)
   }, [props.width, props.height])
 
-  let params = {
-    config: props.config,
-    prevShapeState: shapeState,
-    setConfig: props.setConfig,
-    setShapeState: setShapeState,
-    setTextState: setTextState,
-  }
+  useEffect(() => {
+    if (typeof(cursors[props.tool]) === 'function') {
+      setCursor(cursors[props.tool](params))
+    } else {
+      setCursor(cursors[props.tool])
+    }
+  }, [props.tool, props.config.eraser.size])
 
   const handleClick = (event) => {
     if (!textState.isWriting) {
@@ -48,6 +58,10 @@ function Board(props) {
     }
   }
 
+  const handleKeyDown = (event) => {
+    behaviors[props.tool](event, params)
+  }
+
   let shapes = {}
   if (shapeState.isShaping) {
     shapes.segment = <Segment x={shapeState.x} y={shapeState.y}
@@ -65,10 +79,12 @@ function Board(props) {
       className='bg-dark d-flex flex-grow-1 align-items-center
         justify-content-center h-100'>
 
-      <canvas id='canvas' className='m-5' width={props.width} height={props.height}
+      <canvas id='canvas' className='m-5' tabIndex='-1' width={props.width}
+        height={props.height}
         ref={ref}
-        style={{ cursor: cursors[props.tool], boxShadow: '10px 10px 20px black' }}
+        style={{ cursor: cursor, boxShadow: '10px 10px 20px black' }}
         onClick={handleClick}
+        onKeyDown={handleKeyDown}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}>
 

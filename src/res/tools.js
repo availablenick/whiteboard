@@ -1,42 +1,60 @@
 const tools = {
-  'fas+pencil-alt': null,
-  'fas+eraser': null,
-  'fas+fill': null,
-  'fas+font': null,
-  'shapes': [
-    'fas+slash',
-    'far+square',
-    'far+circle'
+  pencil: null,
+  eraser: null,
+  filler: null,
+  text: null,
+  shapes: [
+    'line',
+    'rectangle',
+    'circle'
   ],
 
-  'fas+eye-dropper': null,
-  'fas+search': null
+  'eye-dropper': null,
+  zoom: null
 }
 
-let c = document.createElement('canvas')
-c.height = 32
-c.width = 32
-let ctx = c.getContext('2d')
-ctx.fillStyle = '#fff'
-ctx.strokeRect(0, 0, c.width, c.height)
-ctx.fillRect(1, 1, c.width - 2, c.height - 2)
-let dataURL = c.toDataURL()
+const icons = {
+  pencil: 'fas+pencil-alt',
+  eraser: 'fas+eraser',
+  filler: 'fas+fill',
+  text: 'fas+font',
+  shapes: {
+    line: 'fas+slash',
+    rectangle: 'far+square',
+    circle: 'far+circle'
+  },
+
+  'eye-dropper': 'fas+eye-dropper',
+  zoom: 'fas+search',
+}
 
 const cursors = {
-  'fas+pencil-alt': 'cell',
-  'fas+eraser': 'url("' + dataURL + '"), auto',
-  'fas+fill': 'no-drop',
-  'fas+font': 'text',
-  'fas+slash': 'crosshair',
-  'far+square': 'crosshair',
-  'far+circle': 'crosshair',
-  'fas+eye-dropper': 'alias',
-  'fas+search': 'cell',
-  'fas+none': ''
+  pencil: 'cell',
+  eraser: (params) => {
+    let canvas = document.createElement('canvas')
+    let ctx = canvas.getContext('2d')
+    canvas.width = params.config.eraser.size
+    canvas.height = params.config.eraser.size
+    ctx.fillStyle = params.config.erasing.color
+    ctx.strokeRect(0, 0, canvas.width, canvas.height)
+    ctx.fillRect(1, 1, canvas.width - 2, canvas.height - 2)
+    let dataURL = canvas.toDataURL()
+
+    return 'url("' + dataURL + '"), auto'
+  },
+
+  filler: 'no-drop',
+  text: 'text',
+  line: 'crosshair',
+  rectangle: 'crosshair',
+  circle: 'crosshair',
+  'eye-dropper': 'alias',
+  zoom: 'cell',
+  none: ''
 }
 
 const behaviors = {
-  'fas+pencil-alt': (event, params) => {
+  pencil: (event, params) => {
     const canvas = event.target
     const context = canvas.getContext('2d')
     let x = event.clientX - canvas.offsetLeft
@@ -58,7 +76,36 @@ const behaviors = {
     }
   },
 
-  'fas+eraser': (event, params) => {
+  eraser: (event, params) => {
+    if (event.type === 'keydown') {
+      if (event.shiftKey) {
+        if (event.key === '+') {
+          let newSize = params.config.eraser.size + 1
+          if (newSize > 48) {
+            newSize = 48
+          }
+
+          params.setConfig({
+            ...params.config,
+            eraser: { size: newSize }
+          })
+        } else if (event.key === '-') {
+          let newSize = params.config.eraser.size - 1
+          if (newSize < 4) {
+            newSize = 4
+          }
+
+          params.setConfig({
+            ...params.config,
+            eraser: { size: newSize }
+          })
+        }
+      }
+
+      return
+    }
+
+    const size = params.config.eraser.size
     const canvas = event.target
     const context = canvas.getContext('2d')
     let x = event.clientX - canvas.offsetLeft
@@ -69,13 +116,13 @@ const behaviors = {
     context.fillStyle = params.config.erasing.color
     context.strokeStyle = params.config.erasing.color
     if (event.type === 'mousedown') {
-      context.fillRect(x, y, 32, 32)
+      context.fillRect(x, y, size, size)
     } else {
       let a = (y - prevY) / (x - prevX)
       if (x === prevX) {
         let yCoord = prevY
         while (yCoord !== y) {
-          context.fillRect(x, yCoord, 32, 32)
+          context.fillRect(x, yCoord, size, size)
           if (prevY < y)
             yCoord += 1
           else
@@ -86,7 +133,7 @@ const behaviors = {
         let lastY = prevY
         while (true) {
           let yCoord = a * (xCoord - x) + y
-          context.fillRect(xCoord, yCoord, 32, 32)
+          context.fillRect(xCoord, yCoord, size, size)
 
           let vertLineXCoord = -1
           if (prevX < x) {
@@ -104,7 +151,7 @@ const behaviors = {
           if (lastY !== yCoord) {
             let yAux = lastY
             while (true) {
-              context.fillRect(vertLineXCoord, yAux, 32, 32)
+              context.fillRect(vertLineXCoord, yAux, size, size)
               if (yAux < yCoord) {
                 yAux++
                 if (yAux >= yCoord - 1)
@@ -123,7 +170,7 @@ const behaviors = {
     }
   },
 
-  'fas+fill': (event, params) => {
+  filler: (event, params) => {
     if (event.type === 'mousedown') {
       const canvas = event.target
       const context = canvas.getContext('2d')
@@ -133,7 +180,7 @@ const behaviors = {
     }
   },
 
-  'fas+font': (event, params) => {
+  text: (event, params) => {
     if (event.type === 'click') {
       params.setTextState({
         isWriting: true,
@@ -143,7 +190,7 @@ const behaviors = {
     }
   },
 
-  'fas+slash': (event, params) => {
+  line: (event, params) => {
     if (event.type === 'mousemove') {
       if (!params.prevShapeState.isShaping) {
         params.setShapeState({
@@ -156,7 +203,7 @@ const behaviors = {
     }
   },
 
-  'far+square': (event, params) => {
+  rectangle: (event, params) => {
     if (event.type === 'mousemove') {
       if (!params.prevShapeState.isShaping) {
         params.setShapeState({
@@ -169,7 +216,7 @@ const behaviors = {
     }
   },
 
-  'far+circle': (event, params) => {
+  circle: (event, params) => {
     if (event.type === 'mousemove') {
       if (!params.prevShapeState.isShaping) {
         params.setShapeState({
@@ -182,7 +229,7 @@ const behaviors = {
     }
   },
 
-  'fas+eye-dropper': (event, params) => {
+  'eye-dropper': (event, params) => {
     if (event.type === 'mousedown') {
       const canvas = event.target
       const context = canvas.getContext('2d')
@@ -207,13 +254,14 @@ const behaviors = {
     }
   },
 
-  'fas+search': (event, params) => {
+  zoom: (event, params) => {
 
   },
 
-  'none': () => {}
+  none: () => {}
 }
 
 exports.tools = tools
+exports.icons = icons
 exports.cursors = cursors
 exports.behaviors = behaviors

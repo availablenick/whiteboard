@@ -5,7 +5,7 @@ import './Tool.scss'
 function Tool(props) {
   const handleClick = (event) => {
     event.stopPropagation()
-    let tool = props.icon
+    let tool = props.name
     if (props.isSelected) {
       tool = 'none'
     }
@@ -15,7 +15,7 @@ function Tool(props) {
       props.setSidebarState(prevSidebarState => {
         let newSidebarState = {}
         for (let key in prevSidebarState) {
-          if (key === props.icon) {
+          if (key === props.name) {
             newSidebarState[key] = !prevSidebarState[key]
           } else {
             newSidebarState[key] = false
@@ -26,11 +26,11 @@ function Tool(props) {
       })
     } else {
       if (!props.isSelected) {
-        props.setGroupIcon(tool.split('+'))
+        props.setGroupIcon(props.icon.split('+'))
         props.setGroupState(prevGroupState => {
           let newGroupState = {}
           for (let key in prevGroupState) {
-            if (key === props.icon) {
+            if (key === props.name) {
               newGroupState[key] = !prevGroupState[key]
             } else {
               newGroupState[key] = false

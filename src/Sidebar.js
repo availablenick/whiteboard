@@ -4,7 +4,7 @@ import Group from './Group'
 import Misc from './Misc'
 import Tool from './Tool'
 import { misc, icons as miscIcons } from './res/misc'
-import { tools } from './res/tools'
+import { tools, icons as toolsIcons } from './res/tools'
 import './Sidebar.scss'
 
 function Sidebar(props) {
@@ -31,7 +31,8 @@ function Sidebar(props) {
     return (
       <li key={key}>
         <Tool
-          icon={key}
+          name={key}
+          icon={toolsIcons[key]}
           isSelected={state[key]}
           setTool={props.setTool}
           setSidebarState={setState}
