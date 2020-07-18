@@ -338,8 +338,8 @@ const ColorPicker = forwardRef((props, ref) => {
             ref={alphaChangerRef}
             style={{
               backgroundImage: alphaChangerBg,
-              backgroundPosition: 'center, 0px 0px, 5px 5px, 5px 5px, 0px 0px',
-              backgroundSize: 'auto, 10px 10px, 10px 10px, 10px 10px, 10px 10px',
+              backgroundPosition: 'center, 0 0, 0.25em 0.25em, 0.25em 0.25em, 0 0',
+              backgroundSize: 'auto, 0.5em 0.5em, 0.5em 0.5em, 0.5em 0.5em, 0.5em 0.5em',
               cursor: alphaSliderStyle.cursor
             }}
             onMouseDown={handleAlphaChangerMouseDown}>
