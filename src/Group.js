@@ -51,28 +51,23 @@ function Group(props) {
 
   const handleClick = (event) => {
     event.stopPropagation()
-    if (props.isSelected) {
-      props.setTool('none')
-    } else {
+    if (!props.isSelected) {
       for (let tool in state) {
         if (state[tool] === true) {
           props.setTool(tool)
         }
       }
-    }
 
-    props.setSidebarState(prevSidebarState => {
-      let newSidebarState = {}
-      for (let key in prevSidebarState) {
-        if (key === props.name) {
-          newSidebarState[key] = !prevSidebarState[key]
-        } else {
+      props.setSidebarState(prevSidebarState => {
+        let newSidebarState = {}
+        for (let key in prevSidebarState) {
           newSidebarState[key] = false
         }
-      }
 
-      return newSidebarState
-    })
+        newSidebarState[props.name] = true
+        return newSidebarState
+      })
+    }
   }
 
   const changeGroupVisibility = (event) => {

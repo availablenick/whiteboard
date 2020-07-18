@@ -13,6 +13,7 @@ function Sidebar(props) {
     initialState[key] = false
   }
 
+  initialState.pencil = true
   let [state, setState] = useState(initialState)
   let toolsList = Object.keys(state).map(key => {
     if (tools[key] !== null) {
@@ -46,21 +47,8 @@ function Sidebar(props) {
       config={props.config} setConfig={props.setConfig} /></li>
   })
 
-  const handleClick = () => {
-    props.setTool('none')
-    setState(prevState => {
-      let newState = {}
-      for (let key in prevState) {
-        newState[key] = false
-      }
-
-      return newState
-    })
-  }
-
   return (
-    <aside className='d-flex flex-column justify-content-between text-white'
-      onClick={handleClick}>
+    <aside className='d-flex flex-column justify-content-between text-white'>
       <ul className='tools-list p-0'>
         {toolsList}
       </ul>

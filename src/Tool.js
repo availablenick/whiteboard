@@ -6,22 +6,16 @@ function Tool(props) {
   const handleClick = (event) => {
     event.stopPropagation()
     let tool = props.name
-    if (props.isSelected) {
-      tool = 'none'
-    }
 
     props.setTool(tool)
-    if (props.setSidebarState) {
+    if (props.setSidebarState && !props.isSelected) {
       props.setSidebarState(prevSidebarState => {
         let newSidebarState = {}
         for (let key in prevSidebarState) {
-          if (key === props.name) {
-            newSidebarState[key] = !prevSidebarState[key]
-          } else {
             newSidebarState[key] = false
-          }
         }
 
+        newSidebarState[props.name] = true
         return newSidebarState
       })
     } else {

@@ -50,7 +50,6 @@ const cursors = {
   circle: 'crosshair',
   'eye-dropper': 'alias',
   zoom: 'cell',
-  none: ''
 }
 
 const behaviors = {
@@ -257,8 +256,6 @@ const behaviors = {
   zoom: (event, params) => {
 
   },
-
-  none: () => {}
 }
 
 exports.tools = tools

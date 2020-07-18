@@ -21,7 +21,7 @@ function App() {
   }
 
   let [config, setConfig] = useState(initialConfig)
-  let [tool, setTool] = useState('none')
+  let [tool, setTool] = useState('pencil')
 
   return (
     <div className='app d-flex h-100'>
