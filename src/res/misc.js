@@ -1,11 +1,11 @@
 const misc = [
   'broom',
-  'bars',
+  'hide',
 ]
 
 const icons = {
   'broom': 'fas+broom',
-  'bars': 'fas+bars'
+  'hide': 'fas+arrow-left'
 }
 
 const behaviors = {
@@ -17,7 +17,10 @@ const behaviors = {
     context.fillRect(0, 0, canvas.width, canvas.height)
   },
 
-  'bars': () => {}
+  'hide': (event, params) => {
+    event.stopPropagation()
+    params.setIsSidebarVisible(false)
+  }
 }
 
 exports.misc = misc

@@ -1,0 +1,26 @@
+@keyframes expand {
+  from { transform: scale(0, 0) }
+  to   { transform: scale(1, 1) }
+}
+
+.expand {
+  animation: expand 0.5s;
+}
+
+.show-hide-sidebar {
+  background: linear-gradient(to bottom, #111, #222);
+  border-radius: 50%;
+  bottom: 1.25em;
+  height: 2em;
+  left: 0.5em;
+  width: 2em;
+  z-index: 111;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background: black;
+  }
+}
