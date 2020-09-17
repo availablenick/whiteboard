@@ -8,7 +8,6 @@ import {
   faFill,
   faFont,
   faPencilAlt,
-  faSearch,
   faShapes,
   faSlash
 } from '@fortawesome/free-solid-svg-icons'
@@ -25,7 +24,6 @@ library.add(
   faFill,
   faFont,
   faPencilAlt,
-  faSearch,
   faShapes,
   faSlash,
   faSquare

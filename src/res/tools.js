@@ -9,8 +9,7 @@ const tools = {
     'circle'
   ],
 
-  'eye-dropper': null,
-  zoom: null
+  'eye-dropper': null
 }
 
 const icons = {
@@ -24,8 +23,7 @@ const icons = {
     circle: 'far+circle'
   },
 
-  'eye-dropper': 'fas+eye-dropper',
-  zoom: 'fas+search',
+  'eye-dropper': 'fas+eye-dropper'
 }
 
 const cursors = {
@@ -48,8 +46,7 @@ const cursors = {
   line: 'crosshair',
   rectangle: 'crosshair',
   circle: 'crosshair',
-  'eye-dropper': 'alias',
-  zoom: 'cell',
+  'eye-dropper': 'alias'
 }
 
 const behaviors = {
@@ -251,11 +248,7 @@ const behaviors = {
         }
       })
     }
-  },
-
-  zoom: (event, params) => {
-
-  },
+  }
 }
 
 exports.tools = tools
