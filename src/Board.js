@@ -34,11 +34,16 @@ function Board(props) {
   }, [props.width, props.height])
 
   useEffect(() => {
-    if (typeof(cursors[props.tool]) === 'function') {
-      setCursor(cursors[props.tool](params))
-    } else {
-      setCursor(cursors[props.tool])
+    async function loadCursor() {
+      if (typeof(cursors[props.tool]) === 'function') {
+        let res = await cursors[props.tool](params)
+        setCursor(res)
+      } else {
+        setCursor(cursors[props.tool])
+      }
     }
+
+    loadCursor()
   }, [props.tool, props.config.eraser.size, props.config.erasing.color])
 
   const handleClick = (event) => {

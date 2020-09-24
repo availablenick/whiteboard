@@ -27,7 +27,26 @@ const icons = {
 }
 
 const cursors = {
-  pencil: 'cell',
+  pencil: () => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    let canvasSize = 20
+    canvas.width = canvasSize
+    canvas.height = canvasSize
+    ctx.fillStyle = '#000'
+    ctx.font = '900 ' + canvasSize + 'px "Font Awesome 5 Free"'
+    ctx.fillText('', 0, 0);
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    return new Promise(resolve => {
+      document.fonts.ready.then(() => {
+        ctx.fillText('\uf303', canvasSize/2, canvasSize/2)
+        let dataURL = canvas.toDataURL()
+        resolve('url("' + dataURL + '"), auto')
+      })
+    })
+  },
   eraser: (params) => {
     let canvas = document.createElement('canvas')
     let ctx = canvas.getContext('2d')
@@ -41,12 +60,50 @@ const cursors = {
     return 'url("' + dataURL + '"), auto'
   },
 
-  filler: 'no-drop',
+  filler: () => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    let canvasSize = 20
+    canvas.width = canvasSize
+    canvas.height = canvasSize
+    ctx.fillStyle = '#000'
+    ctx.font = '900 ' + canvasSize + 'px "Font Awesome 5 Free"'
+    ctx.fillText('', 0, 0);
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    return new Promise(resolve => {
+      document.fonts.ready.then(() => {
+        ctx.fillText('\uf575', canvasSize/2, canvasSize/2)
+        let dataURL = canvas.toDataURL()
+        resolve('url("' + dataURL + '"), auto')
+      })
+    })
+  },
   text: 'text',
   line: 'crosshair',
   rectangle: 'crosshair',
   circle: 'crosshair',
-  'eye-dropper': 'alias'
+  'eye-dropper': () => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    let canvasSize = 20
+    canvas.width = canvasSize
+    canvas.height = canvasSize
+    ctx.fillStyle = '#000'
+    ctx.font = '900 ' + canvasSize + 'px "Font Awesome 5 Free"'
+    ctx.fillText('', 0, 0);
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    return new Promise(resolve => {
+      document.fonts.ready.then(() => {
+        ctx.fillText('\uf1fb', canvasSize/2, canvasSize/2)
+        let dataURL = canvas.toDataURL()
+        resolve('url("' + dataURL + '"), auto')
+      })
+    })
+  }
 }
 
 const behaviors = {
@@ -54,7 +111,7 @@ const behaviors = {
     const canvas = event.target
     const context = canvas.getContext('2d')
     let x = event.clientX - canvas.offsetLeft
-    let y = event.clientY - canvas.offsetTop
+    let y = event.clientY + 19 - canvas.offsetTop
     let prevX = x - event.movementX
     let prevY = y - event.movementY
 
@@ -230,7 +287,7 @@ const behaviors = {
       const canvas = event.target
       const context = canvas.getContext('2d')
       let x = event.clientX - canvas.offsetLeft
-      let y = event.clientY - canvas.offsetTop
+      let y = event.clientY + 19 - canvas.offsetTop
 
       let pixel = context.getImageData(x, y, 1, 1)
       let color = 'rgba(' +
