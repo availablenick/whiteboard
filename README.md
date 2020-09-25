@@ -8,5 +8,5 @@ You will need to install [npm](https://www.npmjs.com/get-npm).
 Just run:
 
 ```
-$ npm start
+$ npm install && npm start
 ```
