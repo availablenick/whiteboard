@@ -26,27 +26,31 @@ const icons = {
   'eye-dropper': 'fas+eye-dropper'
 }
 
-const cursors = {
-  pencil: () => {
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    let canvasSize = 20
-    canvas.width = canvasSize
-    canvas.height = canvasSize
-    ctx.fillStyle = '#000'
-    ctx.font = '900 ' + canvasSize + 'px "Font Awesome 5 Free"'
-    ctx.fillText('', 0, 0);
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
+const getIcon = (iconCode) => {
+  let canvasSize = 24
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  canvas.width = canvasSize
+  canvas.height = canvasSize
+  ctx.fillStyle = '#000'
+  ctx.font = '900 ' + (canvasSize - 4) + 'px "Font Awesome 5 Free"'
+  ctx.shadowBlur = '5'
+  ctx.shadowColor = '#fff'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('', 0, 0);
 
-    return new Promise(resolve => {
-      document.fonts.ready.then(() => {
-        ctx.fillText('\uf303', canvasSize/2, canvasSize/2)
-        let dataURL = canvas.toDataURL()
-        resolve('url("' + dataURL + '"), auto')
-      })
+  return new Promise(resolve => {
+    document.fonts.ready.then(() => {
+      ctx.fillText(iconCode, canvasSize/2, canvasSize/2)
+      let dataURL = canvas.toDataURL()
+      resolve('url("' + dataURL + '"), auto')
     })
-  },
+  })
+}
+
+const cursors = {
+  pencil: () => getIcon('\uf303'),
   eraser: (params) => {
     let canvas = document.createElement('canvas')
     let ctx = canvas.getContext('2d')
@@ -60,58 +64,20 @@ const cursors = {
     return 'url("' + dataURL + '"), auto'
   },
 
-  filler: () => {
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    let canvasSize = 20
-    canvas.width = canvasSize
-    canvas.height = canvasSize
-    ctx.fillStyle = '#000'
-    ctx.font = '900 ' + canvasSize + 'px "Font Awesome 5 Free"'
-    ctx.fillText('', 0, 0);
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-
-    return new Promise(resolve => {
-      document.fonts.ready.then(() => {
-        ctx.fillText('\uf575', canvasSize/2, canvasSize/2)
-        let dataURL = canvas.toDataURL()
-        resolve('url("' + dataURL + '"), auto')
-      })
-    })
-  },
+  filler: () => getIcon('\uf575'),
   text: 'text',
   line: 'crosshair',
   rectangle: 'crosshair',
   circle: 'crosshair',
-  'eye-dropper': () => {
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    let canvasSize = 20
-    canvas.width = canvasSize
-    canvas.height = canvasSize
-    ctx.fillStyle = '#000'
-    ctx.font = '900 ' + canvasSize + 'px "Font Awesome 5 Free"'
-    ctx.fillText('', 0, 0);
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-
-    return new Promise(resolve => {
-      document.fonts.ready.then(() => {
-        ctx.fillText('\uf1fb', canvasSize/2, canvasSize/2)
-        let dataURL = canvas.toDataURL()
-        resolve('url("' + dataURL + '"), auto')
-      })
-    })
-  }
+  'eye-dropper': () => getIcon('\uf1fb')
 }
 
 const behaviors = {
   pencil: (event, params) => {
     const canvas = event.target
     const context = canvas.getContext('2d')
-    let x = event.clientX - canvas.offsetLeft
-    let y = event.clientY + 19 - canvas.offsetTop
+    let x = event.clientX + 2 - canvas.offsetLeft
+    let y = event.clientY + 21 - canvas.offsetTop
     let prevX = x - event.movementX
     let prevY = y - event.movementY
 
