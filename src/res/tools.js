@@ -44,7 +44,7 @@ const getIcon = (iconCode) => {
     document.fonts.ready.then(() => {
       ctx.fillText(iconCode, canvasSize/2, canvasSize/2)
       let dataURL = canvas.toDataURL()
-      resolve('url("' + dataURL + '"), auto')
+      resolve('url("' + dataURL + '") 2 21, auto')
     })
   })
 }
@@ -76,8 +76,8 @@ const behaviors = {
   pencil: (event, params) => {
     const canvas = event.target
     const context = canvas.getContext('2d')
-    let x = event.clientX + 2 - canvas.offsetLeft
-    let y = event.clientY + 21 - canvas.offsetTop
+    let x = event.clientX - canvas.offsetLeft
+    let y = event.clientY - canvas.offsetTop
     let prevX = x - event.movementX
     let prevY = y - event.movementY
 
