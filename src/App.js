@@ -19,7 +19,6 @@ function App() {
     },
 
     'eye-dropper': null,
-    zoom: null,
     drawing: { color: 'rgba(0, 0, 0, 1)' },
     erasing: { color: 'rgba(255, 255, 255, 1)' },
   }
