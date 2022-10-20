@@ -26,7 +26,7 @@ const icons = {
   'eye-dropper': 'fas+eye-dropper'
 }
 
-const getIcon = (iconCode) => {
+const getIcon = (iconCode, x, y) => {
   let canvasSize = 24
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -44,13 +44,13 @@ const getIcon = (iconCode) => {
     document.fonts.ready.then(() => {
       ctx.fillText(iconCode, canvasSize/2, canvasSize/2)
       let dataURL = canvas.toDataURL()
-      resolve('url("' + dataURL + '") 2 21, auto')
+      resolve(`url("${dataURL}") ${x} ${y}, auto`)
     })
   })
 }
 
 const cursors = {
-  pencil: () => getIcon('\uf303'),
+  pencil: () => getIcon('\uf303', 2, 21),
   eraser: (params) => {
     let canvas = document.createElement('canvas')
     let ctx = canvas.getContext('2d')
@@ -64,12 +64,12 @@ const cursors = {
     return 'url("' + dataURL + '"), auto'
   },
 
-  filler: () => getIcon('\uf575'),
+  filler: () => getIcon('\uf575', 10, 10),
   text: 'text',
   line: 'crosshair',
   rectangle: 'crosshair',
   circle: 'crosshair',
-  'eye-dropper': () => getIcon('\uf1fb')
+  'eye-dropper': () => getIcon('\uf1fb', 2, 21)
 }
 
 const behaviors = {
@@ -195,7 +195,77 @@ const behaviors = {
       const context = canvas.getContext('2d')
       context.fillStyle = params.config.drawing.color
       context.strokeStyle = params.config.drawing.color
-      context.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight)
+      let match = /rgba?\((\d+), ?(\d+), ?(\d+)(, ?(\d+))?\)/.exec(params.config.drawing.color)
+      let red = Number(match[1])
+      let green = Number(match[2])
+      let blue = Number(match[3])
+      let alpha = match[5] ? Number(match[5]) : 1
+      let drawingColor = [red, green, blue, alpha]
+
+      let initialX = event.clientX - canvas.offsetLeft
+      let initialY = event.clientY - canvas.offsetTop
+      let initialPixelData = context.getImageData(initialX, initialY, 1, 1).data
+      let initialColor = [
+        initialPixelData[0], initialPixelData[1], initialPixelData[2], initialPixelData[3] / 255,
+      ]
+
+      function shouldFill(x, y) {
+        let pixelData = context.getImageData(x, y, 1, 1).data
+        return (
+          (
+            pixelData[0] !== drawingColor[0] ||
+            pixelData[1] !== drawingColor[1] ||
+            pixelData[2] !== drawingColor[2] ||
+            (pixelData[3] / 255) !== drawingColor[3]
+          ) &&
+          (
+            pixelData[0] === initialColor[0] &&
+            pixelData[1] === initialColor[1] &&
+            pixelData[2] === initialColor[2] &&
+            (pixelData[3] / 255) === initialColor[3]
+          )
+        )
+      }
+
+      function scan(lx, rx, y, q) {
+        let foundBoundary = true
+        for (let x = lx; x <= rx; ++x) {
+          if (!shouldFill(x, y)) {
+            foundBoundary = true
+          } else if (foundBoundary) {
+            q.push([x, y])
+            foundBoundary = false
+          }
+        }
+      }
+
+      if (!shouldFill(initialX, initialY)) {
+        return
+      }
+
+      let queue = [[initialX, initialY]]
+      while (queue.length > 0) {
+        let pos = queue.shift()
+        let x = pos[0]
+        let y = pos[1]
+        let lx = x
+        while (lx >= 1 && shouldFill(lx - 1, y)) {
+          --lx
+        }
+
+        while (x < canvas.width && shouldFill(x, y)) {
+          ++x
+        }
+
+        context.fillRect(lx, y, x - lx, 1)
+        if (y >= 1) {
+          scan(lx, x - 1, y - 1, queue)
+        }
+
+        if (y + 1 < canvas.width) {
+          scan(lx, x - 1, y + 1, queue)
+        }
+      }
     }
   },
 
