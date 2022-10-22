@@ -3,25 +3,39 @@ import Color from './color/Color'
 import Group from './Group'
 import Misc from './Misc'
 import Tool from './Tool'
-import { misc, icons as miscIcons } from './res/misc'
-import { tools, icons as toolsIcons } from './res/tools'
+import { makeItem as makeTool } from './res/tools/toolHandler'
+import { makeItem as makeMiscItem } from './res/misc/miscHandler'
 import './Sidebar.scss'
 
 const Sidebar = forwardRef((props, ref) => {
+  const toolArrangement = {
+    pencil: null,
+    eraser: null,
+    bucket: null,
+    text: null,
+    shapes: [
+      'line',
+      'rectangle',
+      'circle'
+    ],
+    eyeDropper: null,
+  };
+
   let initialState = {}
-  for (let key in tools) {
-    initialState[key] = false
+  for (let tool in toolArrangement) {
+    initialState[tool] = false
   }
 
-  initialState.pencil = true
+  initialState[props.tool] = true
   let [state, setState] = useState(initialState)
-  let toolsList = Object.keys(state).map(key => {
-    if (tools[key] !== null) {
+  let toolsList = Object.keys(state).map(tool => {
+    if (toolArrangement[tool] !== null) {
       return (
-        <li key={key}>
+        <li key={tool}>
           <Group
-            name={key}
-            isSelected={state[key]}
+            name={tool}
+            tools={toolArrangement[tool]}
+            isSelected={state[tool]}
             setTool={props.setTool}
             setSidebarState={setState}
           />
@@ -30,11 +44,11 @@ const Sidebar = forwardRef((props, ref) => {
     }
 
     return (
-      <li key={key}>
+      <li key={tool}>
         <Tool
-          name={key}
-          icon={toolsIcons[key]}
-          isSelected={state[key]}
+          name={tool}
+          icon={makeTool(tool, {}).getIcon()}
+          isSelected={state[tool]}
           setTool={props.setTool}
           setSidebarState={setState}
         />
@@ -42,10 +56,16 @@ const Sidebar = forwardRef((props, ref) => {
     )
   })
 
-  let miscList = misc.map(item => {
-    return <li key={item}><Misc name={item} icon={miscIcons[item]}
-      config={props.config} setConfig={props.setConfig} 
-      setIsSidebarVisible={props.setIsSidebarVisible} /></li>
+  let miscItems = ['clearer', 'hider'];
+  let miscList = miscItems.map(item => {
+    return (
+      <li key={item}>
+        <Misc name={item} icon={makeMiscItem(item, {}).getIcon()}
+          config={props.config} setConfig={props.setConfig} 
+          setIsSidebarVisible={props.setIsSidebarVisible}
+        />
+      </li>
+    )
   })
 
   return (

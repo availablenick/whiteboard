@@ -1,27 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tool from './Tool'
-import { tools, icons } from './res/tools'
+import { makeItem } from './res/tools/toolHandler'
 import './Group.scss'
 
 function Group(props) {
   const ref = useRef(null)
   let initialState = {}
-  for (let tool of tools[props.name]) {
+  for (let tool of props.tools) {
     initialState[tool] = false
   }
 
-  initialState[tools[props.name][0]] = true
-  let [icon, setIcon] = useState(icons[props.name][tools[props.name][0]].split('+'))
+  initialState[props.tools[0]] = true
+  let [icon, setIcon] = useState(makeItem(props.tools[0], {}).getIcon())
   let [state, setState] = useState(initialState)
   let [isContentVisible, setIsContentVisible] = useState(false)
-  let toolsGroup = tools[props.name].map(tool => {
+  let toolsGroup = props.tools.map(tool => {
     return (
       <li key={tool}>
         <Tool
           name={tool}
-          icon={icons[props.name][tool]}
-          parent={props.name}
+          icon={makeItem(tool, {}).getIcon()}
           isSelected={state[tool]}
           setGroupIcon={setIcon}
           setGroupState={setState}

@@ -3,7 +3,7 @@ import Circle from './shapes/Circle'
 import Rectangle from './shapes/Rectangle'
 import Segment from './shapes/Segment'
 import TextBlock from './text/TextBlock'
-import { cursors, behaviors } from './res/tools'
+import { makeItem } from './res/tools/toolHandler'
 import './Board.scss'
 
 function Board(props) {
@@ -19,9 +19,7 @@ function Board(props) {
 
   let params = {
     config: props.config,
-    prevShapeState: shapeState,
     setConfig: props.setConfig,
-    setCursor: setCursor,
     setShapeState: setShapeState,
     setTextState: setTextState,
   }
@@ -34,38 +32,17 @@ function Board(props) {
   }, [props.width, props.height])
 
   useEffect(() => {
-    async function loadCursor() {
-      if (typeof(cursors[props.tool]) === 'function') {
-        let res = await cursors[props.tool](params)
-        setCursor(res)
-      } else {
-        setCursor(cursors[props.tool])
-      }
-    }
-
-    loadCursor()
+    (async () => { setCursor(await makeItem(props.tool, params).getCursor()); })();
   }, [props.tool, props.config.eraser.size, props.config.erasing.color])
+
+  const invokeToolAction = (event) => {
+    makeItem(props.tool, params).executeAction(event);
+  }
 
   const handleClick = (event) => {
     if (!textState.isWriting) {
-      behaviors[props.tool](event, params)
+      invokeToolAction(event);
     }
-  }
-
-  const handleMouseDown = (event) => {
-    if (event.button === 0) {
-      behaviors[props.tool](event, params)
-    }
-  }
-
-  const handleMouseMove = (event) => {
-    if (event.buttons === 1) {
-      behaviors[props.tool](event, params)
-    }
-  }
-
-  const handleKeyDown = (event) => {
-    behaviors[props.tool](event, params)
   }
 
   let shapes = {}
@@ -90,9 +67,9 @@ function Board(props) {
         ref={ref}
         style={{ cursor: cursor, boxShadow: '10px 10px 20px black' }}
         onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}>
+        onKeyDown={invokeToolAction}
+        onMouseDown={invokeToolAction}
+        onMouseMove={invokeToolAction}>
 
         No support for canvas.
       </canvas>

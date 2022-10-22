@@ -10,15 +10,14 @@ function App() {
   let initialConfig = {
     pencil: null,
     eraser: { size: 16 },
-    filler: null,
+    bucket: null,
     text: null,
     shapes: {
       line: null,
       rectangle: null,
       circle: null
     },
-
-    'eye-dropper': null,
+    eyeDropper: null,
     drawing: { color: 'rgba(0, 0, 0, 1)' },
     erasing: { color: 'rgba(255, 255, 255, 1)' },
   }
@@ -43,7 +42,7 @@ function App() {
   return (
     <div className='app d-flex h-100'>
       <Sidebar ref={sidebarRef} config={config} setConfig={setConfig} 
-        setIsSidebarVisible={setIsSidebarVisible} setTool={setTool} />
+        setIsSidebarVisible={setIsSidebarVisible} tool={tool} setTool={setTool} />
 
       <Board config={config} setConfig={setConfig} tool={tool}
         width='750' height='500'/>

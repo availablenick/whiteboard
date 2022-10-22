@@ -20,7 +20,7 @@ function Tool(props) {
       })
     } else {
       if (!props.isSelected) {
-        props.setGroupIcon(props.icon.split('+'))
+        props.setGroupIcon(props.icon)
         props.setGroupState(prevGroupState => {
           let newGroupState = {}
           for (let key in prevGroupState) {
@@ -49,7 +49,7 @@ function Tool(props) {
     <span
       className='tool d-inline-block w-100' style={style}
       onClick={handleClick}>
-      <FontAwesomeIcon icon={props.icon.split('+')} />
+      <FontAwesomeIcon icon={props.icon} />
     </span>
   )
 }
