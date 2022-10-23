@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+    server:
+        build:
+            context: ./server
+            args:
+                - USER_ID=${USER_ID:-1000}
+                - GROUP_ID=${GROUP_ID:-1000}
+        image: whiteboard_server
+        restart: always
+        container_name: whiteboard-server
+        ports:
+            - "${SERVER_PORT:-5000}:5000"
+        volumes:
+            - ./server:/newdir
+            - server_node_modules:/newdir/node_modules
+
+    client:
+        build:
+            context: ./client
+            args:
+                - USER_ID=${USER_ID:-1000}
+                - GROUP_ID=${GROUP_ID:-1000}
+        image: whiteboard_client
+        restart: always
+        container_name: whiteboard-client
+        stdin_open: true
+        ports:
+            - "${CLIENT_PORT:-3000}:3000"
+        volumes:
+            - ./client:/newdir
+            - client_node_modules:/newdir/node_modules
+
+volumes:
+    server_node_modules:
+    client_node_modules:
