@@ -83,7 +83,6 @@ function scan(context, lx, rx, y, queue, sourceColorComponents, drawingColorComp
 }
 
 function shouldFill(context, x, y, sourceColorComponents, drawingColorComponents) {
-  // console.log(context.getImageData);
   let pixelData = context.getImageData(x, y, 1, 1).data;
   let components = [pixelData[0], pixelData[1], pixelData[2], pixelData[3] / 255];
   return colorsMatch(components, sourceColorComponents) &&
