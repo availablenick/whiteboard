@@ -4,16 +4,17 @@ import Circle from './shapes/Circle'
 import Rectangle from './shapes/Rectangle'
 import Segment from './shapes/Segment'
 import TextBlock from './text/TextBlock'
+import Pointer from './Pointer'
 import { makeItem } from './res/tools/toolHandler'
 import './Board.scss'
 
-const getRoomSlug = () => {
-  let match = /\/(\w+)/.exec(window.location.pathname)
-  if (match) {
-    return match[1]
-  }
-
-  return ''
+function generateRGB() {
+  const MAX = 255;
+  return {
+    r: Math.floor(Math.random() * MAX),
+    g: Math.floor(Math.random() * MAX),
+    b: Math.floor(Math.random() * MAX),
+  };
 }
 
 function Board(props) {
@@ -26,6 +27,9 @@ function Board(props) {
   let [shapeState, setShapeState] = useState({
     isShaping: false,
   })
+
+  let [id, setId] = useState('');
+  let [connectedUsers, setConnectedUsers] = useState({})
 
   let params = {
     config: props.config,
@@ -44,17 +48,45 @@ function Board(props) {
       })
 
       socket.on('connect', () => {
-        console.log('connected to ' + slug);
+        setId(socket.id);
       })
 
       socket.on('canvas-change', (data) => {
         drawImageOnCanvas(ref.current, data);
-        console.log('canvas-change received by socket');
+      });
+
+      socket.on('client-connection-change', (data) => {
+        const users = {};
+        Object.keys(data).forEach((id) => {
+          users[id] = {
+            x: data[id].x,
+            y: data[id].y,
+            color: generateRGB(),
+          };
+        })
+        setConnectedUsers(users);
+      });
+
+      socket.on('client-position-change', (data) => {
+        setConnectedUsers((prev) => {
+          return {
+            ...prev,
+            [data.id]: {
+              x: data.x,
+              y: data.y,
+              color: prev[data.id].color,
+            }
+          };
+        });
       });
 
       ref.current.addEventListener('canvas-change', (event) => {
-        console.log('canvas change event triggered')
         socket.emit('canvas-change', event.target.toDataURL());
+      });
+
+      document.addEventListener('mousemove', (event) => {
+        const data = { x: event.clientX, y: event.clientY };
+        socket.emit('client-position-change', data);
       });
     }
 
@@ -88,17 +120,26 @@ function Board(props) {
     })
   }
 
-  const sendMessage = () => {
-    console.log('clickedzzzz')
-    const event = new CustomEvent('canvas-change');
-    ref.current.dispatchEvent(event);
-  }
-
   const handleClick = (event) => {
     if (!textState.isWriting) {
       invokeToolAction(event);
     }
   }
+
+  let userPointers = Object.keys(connectedUsers)
+    .filter((userId) => id !== userId)
+    .map((userId) => {
+      const user = connectedUsers[userId];
+      return (
+        <Pointer
+          key={userId}
+          userId={userId}
+          x={user.x}
+          y={user.y}
+          color={`rgb(${user.color.r}, ${user.color.g}, ${user.color.b})`}
+        />
+      );
+  });
 
   let shapes = {}
   if (shapeState.isShaping) {
@@ -114,7 +155,7 @@ function Board(props) {
 
   return (
     <div id='board-wrapper'
-      className='bg-dark d-flex flex-grow-1 align-items-center
+      className='bg-dark d-flex flex-column flex-grow-1 align-items-center
         justify-content-center h-100'>
 
       <canvas id='canvas' className='m-5' tabIndex='-1' width={props.width}
@@ -129,9 +170,7 @@ function Board(props) {
         No support for canvas.
       </canvas>
 
-      {/* <div>
-        <button type="button" onClick={sendMessage}>send message</button>
-      </div> */}
+      {userPointers}
 
       {shapeState.isShaping && shapes[shapeState.shape]}
 

@@ -1,0 +1,17 @@
+.user-pointer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+
+  .label {
+    font-size: 0.7rem;
+  }
+
+  .marker {
+    border-radius: 50%;
+    display: block;
+    height: 0.5rem;
+    width: 0.5rem;
+  }
+}
