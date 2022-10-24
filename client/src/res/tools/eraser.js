@@ -1,3 +1,5 @@
+import { createCanvasChangeEvent } from '../helpers';
+
 const eraser = {
   config: {},
   setConfig: () => {},
@@ -35,9 +37,10 @@ const eraser = {
     const NO_BUTTON = 0;
     if (event.type === 'mousedown' && event.button === NO_BUTTON) {
       context.fillRect(x, y-1, this.config.eraser.size, this.config.eraser.size);
+      canvas.dispatchEvent(createCanvasChangeEvent());
       return;
     }
-
+    
     const LEFT_BUTTON = 1;
     if (event.type === 'mousemove' && event.buttons === LEFT_BUTTON) {
       if (x === previousX) {
@@ -45,6 +48,8 @@ const eraser = {
       } else {
         fillDiagonalPath(previousX, previousY, x, y, this.config.eraser.size, context);
       }
+
+      canvas.dispatchEvent(createCanvasChangeEvent());
     }
   },
 };

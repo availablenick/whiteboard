@@ -1,10 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { io } from "socket.io-client"
 import Circle from './shapes/Circle'
 import Rectangle from './shapes/Rectangle'
 import Segment from './shapes/Segment'
 import TextBlock from './text/TextBlock'
 import { makeItem } from './res/tools/toolHandler'
 import './Board.scss'
+
+const getRoomSlug = () => {
+  let match = /\/(\w+)/.exec(window.location.pathname)
+  if (match) {
+    return match[1]
+  }
+
+  return ''
+}
 
 function Board(props) {
   const ref = useRef(null)
@@ -25,6 +35,37 @@ function Board(props) {
   }
 
   useEffect(() => {
+    let socket = null;
+    let match = /\/(\w+)/.exec(window.location.pathname)
+    if (match) {
+      let slug = match[1];
+      socket = io(`ws://localhost:5000/${slug}`, {
+        reconnectionDelayMax: 10000,
+      })
+
+      socket.on('connect', () => {
+        console.log('connected to ' + slug);
+      })
+
+      socket.on('canvas-change', (data) => {
+        drawImageOnCanvas(ref.current, data);
+        console.log('canvas-change received by socket');
+      });
+
+      ref.current.addEventListener('canvas-change', (event) => {
+        console.log('canvas change event triggered')
+        socket.emit('canvas-change', event.target.toDataURL());
+      });
+    }
+
+    return () => {
+      if (match) {
+        socket.close()
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     ref.current.focus()
     const ctx = ref.current.getContext('2d')
     ctx.fillStyle = '#fff'
@@ -37,6 +78,20 @@ function Board(props) {
 
   const invokeToolAction = (event) => {
     makeItem(props.tool, params).executeAction(event);
+  }
+
+  const drawImageOnCanvas = (canvas, dataURL) => {
+    let img = document.createElement('img');
+    img.src = dataURL;
+    img.addEventListener('load', () => {
+      canvas.getContext('2d').drawImage(img, 0, 0);
+    })
+  }
+
+  const sendMessage = () => {
+    console.log('clickedzzzz')
+    const event = new CustomEvent('canvas-change');
+    ref.current.dispatchEvent(event);
   }
 
   const handleClick = (event) => {
@@ -73,6 +128,10 @@ function Board(props) {
 
         No support for canvas.
       </canvas>
+
+      {/* <div>
+        <button type="button" onClick={sendMessage}>send message</button>
+      </div> */}
 
       {shapeState.isShaping && shapes[shapeState.shape]}
 

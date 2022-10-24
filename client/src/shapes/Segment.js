@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { createCanvasChangeEvent } from '../res/helpers'
 import { calculateAngle, distance } from './helpers'
 import './Segment.scss'
 
@@ -44,6 +45,8 @@ function Segment(props) {
       ctx.lineTo(rightR.x - canvas.offsetLeft, rightR.y - canvas.offsetTop)
       ctx.stroke()
       ctx.closePath()
+
+      canvas.dispatchEvent(createCanvasChangeEvent())
     }
   }, [])
 

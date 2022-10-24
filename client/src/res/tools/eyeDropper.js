@@ -1,4 +1,4 @@
-import { getIconFromCanvas } from './helpers';
+import { getIconFromCanvas } from '../helpers';
 
 const eyeDropper = {
   setConfig: () => {},

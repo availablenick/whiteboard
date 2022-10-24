@@ -1,4 +1,4 @@
-import { getIconFromCanvas } from './helpers';
+import { createCanvasChangeEvent, getIconFromCanvas } from '../helpers';
 
 const bucket = {
   color: '',
@@ -31,6 +31,8 @@ const bucket = {
       ];
 
       fillMatchingArea(canvas, sourceX, sourceY, sourceColorComponents, drawingColorComponents);
+      
+      canvas.dispatchEvent(createCanvasChangeEvent());
     }
   },
 };

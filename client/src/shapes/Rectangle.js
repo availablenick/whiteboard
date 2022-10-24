@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import behaviors from '../res/resizing'
 import { getQuadrant } from './helpers'
+import { createCanvasChangeEvent } from '../res/helpers'
 import './Rectangle.scss'
 import '../res/resizable.scss'
 
@@ -40,6 +41,8 @@ function Rectangle(props) {
         rect.top - canvas.offsetTop,
         rect.width, rect.height
       )
+
+      canvas.dispatchEvent(createCanvasChangeEvent())
     }
   }, [])
 

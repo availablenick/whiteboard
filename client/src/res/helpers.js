@@ -20,6 +20,11 @@ function getIconFromCanvas(iconCode, x, y) {
 	});
 }
 
+function createCanvasChangeEvent() {
+	return new CustomEvent('canvas-change');
+}
+
 export {
+	createCanvasChangeEvent,
   getIconFromCanvas,
 };

@@ -45,7 +45,7 @@ function App() {
         setIsSidebarVisible={setIsSidebarVisible} tool={tool} setTool={setTool} />
 
       <Board config={config} setConfig={setConfig} tool={tool}
-        width='750' height='500'/>
+        width='675' height='450'/>
 
       {!isSidebarVisible &&
         <button className='show-hide-sidebar position-absolute border-0 text-white'

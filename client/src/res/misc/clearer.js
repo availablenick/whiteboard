@@ -1,3 +1,5 @@
+import { createCanvasChangeEvent } from '../helpers';
+
 const clearer = {
   getIcon() {
     return ['fas', 'broom'];
@@ -8,6 +10,7 @@ const clearer = {
     let context = canvas.getContext('2d');
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    canvas.dispatchEvent(createCanvasChangeEvent());
 	},
 };
 

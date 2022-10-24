@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import behaviors from '../res/resizing'
 import { getQuadrant } from './helpers'
+import { createCanvasChangeEvent } from '../res/helpers';
 import './Circle.scss'
 import '../res/resizable.scss'
 
@@ -45,6 +46,8 @@ function Circle(props) {
 
       ctx.stroke()
       ctx.closePath()
+
+      canvas.dispatchEvent(createCanvasChangeEvent())
     }
   }, [])
 

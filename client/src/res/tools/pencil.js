@@ -1,4 +1,4 @@
-import { getIconFromCanvas } from './helpers';
+import { createCanvasChangeEvent, getIconFromCanvas } from '../helpers';
 
 const pencil = {
   color: '',
@@ -22,6 +22,7 @@ const pencil = {
     const NO_BUTTON = 0;
     if (event.type === 'mousedown' && event.button === NO_BUTTON) {
       context.fillRect(x-1, y-1, 2, 2);
+      canvas.dispatchEvent(createCanvasChangeEvent());
       return;
     }
 
@@ -33,6 +34,7 @@ const pencil = {
       context.lineTo(x, y);
       context.stroke();
       context.closePath();
+      canvas.dispatchEvent(createCanvasChangeEvent());
     }
   },
 };
