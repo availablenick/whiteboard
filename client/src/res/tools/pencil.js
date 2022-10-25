@@ -14,14 +14,14 @@ const pencil = {
     context.fillStyle = this.color;
     context.strokeStyle = this.color;
 
-    let x = event.clientX - canvas.offsetLeft;
-    let y = event.clientY - canvas.offsetTop;
-    let previousX = x - event.movementX;
-    let previousY = y - event.movementY;
+    const x = event.clientX - canvas.offsetLeft;
+    const y = event.clientY - canvas.offsetTop;
+    const previousX = x - event.movementX;
+    const previousY = y - event.movementY;
 
     const NO_BUTTON = 0;
     if (event.type === 'mousedown' && event.button === NO_BUTTON) {
-      context.fillRect(x-1, y-1, 2, 2);
+      context.fillRect(x - 1, y - 1, 2, 2);
       canvas.dispatchEvent(createCanvasChangeEvent());
       return;
     }

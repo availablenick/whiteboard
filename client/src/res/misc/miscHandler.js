@@ -2,7 +2,7 @@ import clearer from './clearer';
 import hider from './hider';
 
 function makeItem(miscItemName, { setIsSidebarVisible }) {
-	switch (miscItemName) {
+  switch (miscItemName) {
     case 'clearer':
       return clearer;
     case 'hider':
@@ -15,4 +15,4 @@ function makeItem(miscItemName, { setIsSidebarVisible }) {
   return null;
 }
 
-export { makeItem };
+export default makeItem;

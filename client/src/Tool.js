@@ -1,57 +1,65 @@
-import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import './Tool.scss'
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './Tool.scss';
 
-function Tool(props) {
+function Tool({
+  name,
+  isSelected,
+  setTool,
+  setSidebarState,
+  icon,
+  setGroupIcon,
+  setGroupState,
+}) {
   const handleClick = (event) => {
-    const canvas = document.getElementById('canvas')
-    canvas.focus()
-    event.stopPropagation()
-    props.setTool(props.name)
-    if (props.setSidebarState && !props.isSelected) {
-      props.setSidebarState(prevSidebarState => {
-        let newSidebarState = {}
-        for (let key in prevSidebarState) {
-            newSidebarState[key] = false
-        }
+    const canvas = document.getElementById('canvas');
+    canvas.focus();
+    event.stopPropagation();
+    setTool(name);
+    if (setSidebarState && !isSelected) {
+      setSidebarState((prevSidebarState) => {
+        const newSidebarState = {};
+        Object.keys(prevSidebarState).forEach((key) => {
+          newSidebarState[key] = false;
+        });
 
-        newSidebarState[props.name] = true
-        return newSidebarState
-      })
-    } else {
-      if (!props.isSelected) {
-        props.setGroupIcon(props.icon)
-        props.setGroupState(prevGroupState => {
-          let newGroupState = {}
-          for (let key in prevGroupState) {
-            if (key === props.name) {
-              newGroupState[key] = !prevGroupState[key]
-            } else {
-              newGroupState[key] = false
-            }
+        newSidebarState[name] = true;
+        return newSidebarState;
+      });
+    } else if (!isSelected) {
+      setGroupIcon(icon);
+      setGroupState((prevGroupState) => {
+        const newGroupState = {};
+        Object.keys(prevGroupState).forEach((key) => {
+          if (key === name) {
+            newGroupState[key] = !prevGroupState[key];
+          } else {
+            newGroupState[key] = false;
           }
+        });
 
-          return newGroupState
-        })
-      }
+        return newGroupState;
+      });
     }
-  }
+  };
 
-  let style = {}
-  if (props.isSelected) {
+  let style = {};
+  if (isSelected) {
     style = {
       background: 'white',
-      color: 'black'
-    }
+      color: 'black',
+    };
   }
 
   return (
     <span
-      className='tool d-inline-block w-100' style={style}
-      onClick={handleClick}>
-      <FontAwesomeIcon icon={props.icon} />
+      className="tool d-inline-block w-100"
+      style={style}
+      onClick={handleClick}
+    >
+      <FontAwesomeIcon icon={icon} />
     </span>
-  )
+  );
 }
 
-export default Tool
+export default Tool;

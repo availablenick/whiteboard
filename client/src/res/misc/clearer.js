@@ -4,14 +4,14 @@ const clearer = {
   getIcon() {
     return ['fas', 'broom'];
   },
-	executeAction(event) {
+  executeAction(event) {
     event.stopPropagation();
-    let canvas = document.getElementById('canvas');
-    let context = canvas.getContext('2d');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvas.width, canvas.height);
     canvas.dispatchEvent(createCanvasChangeEvent());
-	},
+  },
 };
 
 export default clearer;

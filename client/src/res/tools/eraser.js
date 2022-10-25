@@ -7,14 +7,14 @@ const eraser = {
     return ['fas', 'eraser'];
   },
   getCursor() {
-    let canvas = document.createElement('canvas')
-    let context = canvas.getContext('2d');
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
     canvas.width = this.config.eraser.size;
     canvas.height = this.config.eraser.size;
     context.fillStyle = this.config.erasing.color;
     context.strokeRect(0, 0, canvas.width, canvas.height);
     context.fillRect(1, 1, canvas.width - 2, canvas.height - 2);
-    let dataURL = canvas.toDataURL();
+    const dataURL = canvas.toDataURL();
 
     return `url("${dataURL}"), auto`;
   },
@@ -29,18 +29,18 @@ const eraser = {
     context.fillStyle = this.config.erasing.color;
     context.strokeStyle = this.config.erasing.color;
 
-    let x = event.clientX - canvas.offsetLeft;
-    let y = event.clientY - canvas.offsetTop;
-    let previousX = x - event.movementX;
-    let previousY = y - event.movementY;
+    const x = event.clientX - canvas.offsetLeft;
+    const y = event.clientY - canvas.offsetTop;
+    const previousX = x - event.movementX;
+    const previousY = y - event.movementY;
 
     const NO_BUTTON = 0;
     if (event.type === 'mousedown' && event.button === NO_BUTTON) {
-      context.fillRect(x, y-1, this.config.eraser.size, this.config.eraser.size);
+      context.fillRect(x, y - 1, this.config.eraser.size, this.config.eraser.size);
       canvas.dispatchEvent(createCanvasChangeEvent());
       return;
     }
-    
+
     const LEFT_BUTTON = 1;
     if (event.type === 'mousemove' && event.buttons === LEFT_BUTTON) {
       if (x === previousX) {
@@ -76,38 +76,38 @@ function fillVerticalPath(x, sourceY, destY, size, context) {
   let currentY = sourceY;
   while (currentY !== destY) {
     currentY = sourceY < destY ? currentY + 1 : currentY - 1;
-    context.fillRect(x, currentY-1, size, size);
+    context.fillRect(x, currentY - 1, size, size);
   }
-};
+}
 
 function fillDiagonalPath(sourceX, sourceY, destX, destY, size, context) {
-  let slope = (destY - sourceY) / (destX - sourceX);
+  const slope = (destY - sourceY) / (destX - sourceX);
   let currentX = sourceX;
   let lastY = sourceY;
   while (!destXWasReached(sourceX, destX, currentX)) {
-    let currentY = slope * (currentX - destX) + destY;
-    context.fillRect(currentX, currentY-1, size-1, size);
-    let lastX = currentX;
+    const currentY = slope * (currentX - destX) + destY;
+    context.fillRect(currentX, currentY - 1, size - 1, size);
+    const lastX = currentX;
     currentX = sourceX < destX ? currentX + 1 : currentX - 1;
 
     if (lastY !== currentY) {
       let auxY = lastY;
       while (!destYWasReached(lastY, currentY, auxY)) {
-        context.fillRect(lastX-1, auxY-1, size, size);
+        context.fillRect(lastX - 1, auxY - 1, size, size);
         auxY = lastY < currentY ? auxY + 1 : auxY - 1;
       }
 
       lastY = currentY;
     }
   }
-};
+}
 
 function destXWasReached(sourceX, destX, currentX) {
-  return (sourceX < destX && currentX > destX + 1) ||
-         (sourceX >= destX && currentX < destX - 1);
+  return (sourceX < destX && currentX > destX + 1)
+         || (sourceX >= destX && currentX < destX - 1);
 }
 
 function destYWasReached(sourceY, destY, currentY) {
-  return (sourceY < destY && currentY >= destY - 1) ||
-         (sourceY >= destY && currentY <= destY + 1);
+  return (sourceY < destY && currentY >= destY - 1)
+         || (sourceY >= destY && currentY <= destY + 1);
 }

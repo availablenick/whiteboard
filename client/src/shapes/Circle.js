@@ -1,137 +1,144 @@
-import React, { useState, useEffect, useRef } from 'react'
-import behaviors from '../res/resizing'
-import { getQuadrant } from './helpers'
+import React, { useState, useEffect, useRef } from 'react';
+import behaviors from '../res/resizing';
+import { getQuadrant } from './helpers';
 import { createCanvasChangeEvent } from '../res/helpers';
-import './Circle.scss'
-import '../res/resizable.scss'
+import './Circle.scss';
+import '../res/resizable.scss';
 
-function Circle(props) {
-  const canvas = document.getElementById('canvas')
-  const ref = useRef(null)
-  let initialStyle = {
+function Circle({ config, x, y, setShapeState }) {
+  const canvas = document.getElementById('canvas');
+  const ref = useRef(null);
+  const initialStyle = {
     left: '-500px',
-    top: '-500px'
-  }
+    top: '-500px',
+  };
 
-  let [style, setStyle] = useState(initialStyle)
-  let [stage, setStage] = useState('shaping')
+  const [style, setStyle] = useState(initialStyle);
+  const [stage, setStage] = useState('shaping');
   useEffect(() => {
-    let newStyle = {
-      border: '4px solid ' + props.config.drawing.color,
+    const newStyle = {
+      border: `4px solid ${config.drawing.color}`,
       height: 0,
-      left: props.x + 'px',
-      top: props.y + 'px',
-      width: 0
-    }
+      left: `${x}px`,
+      top: `${y}px`,
+      width: 0,
+    };
 
-    const circShape = ref.current
-    setStyle(newStyle)
+    const circShape = ref.current;
+    setStyle(newStyle);
 
     return () => {
-      document.onmousemove = null
-      document.onmouseup = null
+      document.onmousemove = null;
+      document.onmouseup = null;
 
-      const ctx = canvas.getContext('2d')
-      const rect = circShape.getBoundingClientRect()
-      ctx.fillStyle = props.config.drawing.color
-      ctx.strokeStyle = props.config.drawing.color
-      ctx.lineWidth = 4
-      ctx.beginPath()
+      const ctx = canvas.getContext('2d');
+      const rect = circShape.getBoundingClientRect();
+      ctx.fillStyle = config.drawing.color;
+      ctx.strokeStyle = config.drawing.color;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
       ctx.ellipse(
         rect.left + (rect.width / 2) - canvas.offsetLeft,
         rect.top + (rect.height / 2) - canvas.offsetTop,
-        rect.width / 2, rect.height / 2,
-        0, 0, 2 * Math.PI
-      )
+        rect.width / 2,
+        rect.height / 2,
+        0,
+        0,
+        2 * Math.PI,
+      );
 
-      ctx.stroke()
-      ctx.closePath()
+      ctx.stroke();
+      ctx.closePath();
 
-      canvas.dispatchEvent(createCanvasChangeEvent())
-    }
-  }, [])
+      canvas.dispatchEvent(createCanvasChangeEvent());
+    };
+  }, []);
 
   useEffect(() => {
     if (/shaping/.test(stage)) {
-      let newEvent = new MouseEvent('mousedown', { bubbles: true })
-      ref.current.dispatchEvent(newEvent)
+      const newEvent = new MouseEvent('mousedown', { bubbles: true });
+      ref.current.dispatchEvent(newEvent);
     } else {
-      function removeShape(event) {
-        if (event.target === ref.current ||
-            ref.current.contains(event.target)) {
-          return
+      const removeShape = (event) => {
+        if (event.target === ref.current
+            || ref.current.contains(event.target)) {
+          return;
         }
 
-        props.setShapeState({
+        setShapeState({
           isShaping: false,
-        })
-      }
+        });
+      };
 
-      document.addEventListener('click', removeShape)
+      document.addEventListener('click', removeShape);
       return () => {
-        document.removeEventListener('click', removeShape)
-      }
+        document.removeEventListener('click', removeShape);
+      };
     }
-  }, [stage])
+
+    return () => {};
+  }, [stage]);
 
   const handleMouseDown = (event) => {
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
     if (/shaping/.test(stage)) {
-      event.persist()
-      let p = { x: props.x, y: props.y }
-      let corners = {
+      event.persist();
+      const p = { x, y };
+      const corners = {
         1: 'top-right',
         2: 'top-left',
         3: 'bottom-left',
-        4: 'bottom-right'
-      }
+        4: 'bottom-right',
+      };
 
-      document.onmousemove = (event) => {
-        let q = { x: event.clientX, y: event.clientY }
-        behaviors[corners[getQuadrant(p, q)]](event, ref.current, setStyle,
-          { height: 0, width: 0 })
-      }
+      document.onmousemove = (mouseMoveEvent) => {
+        const q = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
+        behaviors[corners[getQuadrant(p, q)]](
+          mouseMoveEvent,
+          ref.current,
+          setStyle,
+          { height: 0, width: 0 },
+        );
+      };
     } else {
-      let shiftX = event.clientX - ref.current.offsetLeft
-      let shiftY = event.clientY - ref.current.offsetTop
-      document.onmousemove = (event) => {
-        let xPos = event.clientX - shiftX
-        let yPos = event.clientY - shiftY
-        let canvasRight = canvas.offsetLeft + canvas.offsetWidth
+      const shiftX = event.clientX - ref.current.offsetLeft;
+      const shiftY = event.clientY - ref.current.offsetTop;
+      document.onmousemove = (mouseMoveEvent) => {
+        let xPos = mouseMoveEvent.clientX - shiftX;
+        let yPos = mouseMoveEvent.clientY - shiftY;
+        const canvasRight = canvas.offsetLeft + canvas.offsetWidth;
         if (xPos < canvas.offsetLeft) {
-          xPos = canvas.offsetLeft
+          xPos = canvas.offsetLeft;
         } else if (xPos + ref.current.offsetWidth > canvasRight) {
-          xPos = canvasRight - ref.current.offsetWidth
+          xPos = canvasRight - ref.current.offsetWidth;
         }
 
-        let canvasBottom = canvas.offsetTop + canvas.offsetHeight
+        const canvasBottom = canvas.offsetTop + canvas.offsetHeight;
         if (yPos < canvas.offsetTop) {
-          yPos = canvas.offsetTop
+          yPos = canvas.offsetTop;
         } else if (yPos + ref.current.offsetHeight > canvasBottom) {
-          yPos = canvasBottom - ref.current.offsetHeight
+          yPos = canvasBottom - ref.current.offsetHeight;
         }
 
-        setStyle(prevStyle => {
-          return {
-            ...prevStyle,
-            left: xPos + 'px',
-            top: yPos + 'px',
-          }
-        })
-      }
+        setStyle((prevStyle) => ({
+          ...prevStyle,
+          left: `${xPos}px`,
+          top: `${yPos}px`,
+        }));
+      };
     }
 
     document.onmouseup = () => {
-      document.onmousemove = null
-      document.onmouseup = null
+      document.onmousemove = null;
+      document.onmouseup = null;
       if (/shaping/.test(stage)) {
-        setStage('positioning')
+        setStage('positioning');
       }
-    }
-  }
+    };
+  };
 
-  let positions = [
+  const positions = [
     'top',
     'top-right',
     'right',
@@ -139,46 +146,55 @@ function Circle(props) {
     'bottom',
     'bottom-left',
     'left',
-    'top-left'
-  ]
+    'top-left',
+  ];
 
-  let points = positions.map(item => {
+  const points = positions.map((item) => {
     function resMouseDown(event) {
-      event.preventDefault()
-      event.persist()
-      event.stopPropagation()
-  
-      function mouseMove(event) {
-        behaviors[item](event, ref.current, setStyle, { height: 1, width: 1 })
+      event.preventDefault();
+      event.persist();
+      event.stopPropagation();
+
+      function mouseMove(mouseMoveEvent) {
+        behaviors[item](mouseMoveEvent, ref.current, setStyle, { height: 1, width: 1 });
       }
 
-      document.addEventListener('mousemove', mouseMove)
+      document.addEventListener('mousemove', mouseMove);
       document.onmouseup = () => {
-        document.removeEventListener('mousemove', mouseMove)
-        document.onmouseup = null
+        document.removeEventListener('mousemove', mouseMove);
+        document.onmouseup = null;
         setStyle({
           ...style,
           bottom: '',
           height: ref.current.offsetHeight,
-          left: ref.current.offsetLeft + 'px',
+          left: `${ref.current.offsetLeft}px`,
           right: '',
-          top: ref.current.offsetTop + 'px',
-          width: ref.current.offsetWidth + 'px',
-        })
-      }
+          top: `${ref.current.offsetTop}px`,
+          width: `${ref.current.offsetWidth}px`,
+        });
+      };
     }
 
-    return <div key={item} className={'res ' + item}
-      onMouseDown={resMouseDown}></div>
-  })
+    return (
+      <div
+        key={item}
+        className={`res ${item}`}
+        onMouseDown={resMouseDown}
+      />
+    );
+  });
 
   return (
-    <div className='circle-shape resizable' style={style} ref={ref}
-      onMouseDown={handleMouseDown}>
+    <div
+      className="circle-shape resizable"
+      style={style}
+      ref={ref}
+      onMouseDown={handleMouseDown}
+    >
 
       {stage === 'positioning' && points}
     </div>
-  )
+  );
 }
 
-export default Circle
+export default Circle;

@@ -6,7 +6,7 @@ const circle = {
   getCursor() {
     return 'crosshair';
   },
-  executeAction(event)  {
+  executeAction(event) {
     const LEFT_BUTTON = 1;
     if (event.type === 'mousemove' && event.buttons === LEFT_BUTTON) {
       event.persist();

@@ -1,107 +1,111 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Tool from './Tool'
-import { makeItem } from './res/tools/toolHandler'
-import './Group.scss'
+import React, { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Tool from './Tool';
+import makeItem from './res/tools/toolHandler';
+import './Group.scss';
 
-function Group(props) {
-  const ref = useRef(null)
-  let initialState = {}
-  for (let tool of props.tools) {
-    initialState[tool] = false
-  }
+function Group({ name, tools, setTool, isSelected, setSidebarState }) {
+  const ref = useRef(null);
+  const initialState = {};
+  Object.keys(tools).forEach((tool) => {
+    initialState[tool] = false;
+  });
 
-  initialState[props.tools[0]] = true
-  let [icon, setIcon] = useState(makeItem(props.tools[0], {}).getIcon())
-  let [state, setState] = useState(initialState)
-  let [isContentVisible, setIsContentVisible] = useState(false)
-  let toolsGroup = props.tools.map(tool => {
-    return (
-      <li key={tool}>
-        <Tool
-          name={tool}
-          icon={makeItem(tool, {}).getIcon()}
-          isSelected={state[tool]}
-          setGroupIcon={setIcon}
-          setGroupState={setState}
-          setTool={props.setTool}
-        />
-      </li>
-    )
-  })
+  initialState[tools[0]] = true;
+  const [icon, setIcon] = useState(makeItem(tools[0], {}).getIcon());
+  const [state, setState] = useState(initialState);
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const toolsGroup = tools.map((tool) => (
+    <li key={tool}>
+      <Tool
+        name={tool}
+        icon={makeItem(tool, {}).getIcon()}
+        isSelected={state[tool]}
+        setGroupIcon={setIcon}
+        setGroupState={setState}
+        setTool={setTool}
+      />
+    </li>
+  ));
 
   useEffect(() => {
     if (isContentVisible) {
-      function hideGroup(event) {
-        if (event.target === ref.current ||
-            ref.current.contains(event.target)) {
-          return
+      const hideGroup = (event) => {
+        if (event.target === ref.current
+            || ref.current.contains(event.target)) {
+          return;
         }
 
-        setIsContentVisible(false)
-      }
+        setIsContentVisible(false);
+      };
 
-      document.addEventListener('mousedown', hideGroup)
+      document.addEventListener('mousedown', hideGroup);
       return () => {
-        document.removeEventListener('mousedown', hideGroup)
-      }
+        document.removeEventListener('mousedown', hideGroup);
+      };
     }
-  }, [isContentVisible])
+
+    return () => {};
+  }, [isContentVisible]);
 
   const handleClick = (event) => {
-    event.stopPropagation()
-    if (!props.isSelected) {
-      for (let tool in state) {
+    event.stopPropagation();
+    if (!isSelected) {
+      Object.keys(state).forEach((tool) => {
         if (state[tool] === true) {
-          props.setTool(tool)
+          setTool(tool);
         }
-      }
+      });
 
-      props.setSidebarState(prevSidebarState => {
-        let newSidebarState = {}
-        for (let key in prevSidebarState) {
-          newSidebarState[key] = false
-        }
+      setSidebarState((prevSidebarState) => {
+        const newSidebarState = {};
+        Object.keys(prevSidebarState).forEach((key) => {
+          newSidebarState[key] = false;
+        });
 
-        newSidebarState[props.name] = true
-        return newSidebarState
-      })
+        newSidebarState[name] = true;
+        return newSidebarState;
+      });
     }
-  }
+  };
 
   const changeGroupVisibility = (event) => {
-    event.stopPropagation()
-    setIsContentVisible(!isContentVisible)
-  }
+    event.stopPropagation();
+    setIsContentVisible(!isContentVisible);
+  };
 
-  let arrowStyle = {}
-  let blockStyle = {}
-  if (props.isSelected) {
+  let arrowStyle = {};
+  let blockStyle = {};
+  if (isSelected) {
     arrowStyle = {
-      borderLeft: '4.5px solid black'
-    }
+      borderLeft: '4.5px solid black',
+    };
 
     blockStyle = {
       background: 'white',
-      color: 'black'
-    }
+      color: 'black',
+    };
   }
 
   return (
-    <div className='tool-group w-100' ref={ref} onClick={handleClick}>
-      <span className='d-inline-block w-100' style={blockStyle}>
+    <div className="tool-group w-100" ref={ref} onClick={handleClick}>
+      <span className="d-inline-block w-100" style={blockStyle}>
         <FontAwesomeIcon icon={icon} />
-        <span className='show-hide' style={arrowStyle}
-          onClick={changeGroupVisibility}></span>
+        <span
+          className="show-hide"
+          style={arrowStyle}
+          onClick={changeGroupVisibility}
+        />
       </span>
 
-      {isContentVisible &&
+      {isContentVisible
+        && (
         <ul>
           {toolsGroup}
         </ul>
-      }
+        )}
     </div>
-  )
+  );
 }
 
-export default Group
+export default Group;

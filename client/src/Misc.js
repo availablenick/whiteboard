@@ -1,24 +1,23 @@
-import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { makeItem } from './res/misc/miscHandler';
-import './Misc.scss'
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import makeItem from './res/misc/miscHandler';
+import './Misc.scss';
 
-function Misc(props) {
-  let params = {
-    setIsSidebarVisible: props.setIsSidebarVisible
-  }
+function Misc({ name, icon, setIsSidebarVisible }) {
+  const params = { setIsSidebarVisible };
 
   const handleClick = (event) => {
-    makeItem(props.name, params).executeAction(event);
-  }
+    makeItem(name, params).executeAction(event);
+  };
 
   return (
     <span
-      className='misc circular d-inline-flex align-items-center justify-content-center'
-      onClick={handleClick}>
-      <FontAwesomeIcon icon={props.icon} />
+      className="misc circular d-inline-flex align-items-center justify-content-center"
+      onClick={handleClick}
+    >
+      <FontAwesomeIcon icon={icon} />
     </span>
-  )
+  );
 }
 
-export default Misc
+export default Misc;

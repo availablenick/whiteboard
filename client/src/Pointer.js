@@ -7,8 +7,10 @@ function Pointer({ userId, x, y, color = '#000' }) {
       className="user-pointer"
       style={{ left: x, top: y }}
     >
-      <span className="label" style={{ color }}>User {userId}</span>
-      <span className="marker" style={{ background: color }}></span>
+      <span className="label" style={{ color }}>
+        User {userId}
+      </span>
+      <span className="marker" style={{ background: color }} />
     </div>
   );
 }

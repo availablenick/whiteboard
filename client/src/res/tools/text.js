@@ -6,7 +6,7 @@ const text = {
   getCursor() {
     return 'text';
   },
-  executeAction (event) {
+  executeAction(event) {
     if (event.type === 'click') {
       this.setTextState({
         isWriting: true,

@@ -46,4 +46,4 @@ function makeItem(toolName, {
   return null;
 }
 
-export { makeItem };
+export default makeItem;

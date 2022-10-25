@@ -1,4 +1,4 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faArrowLeft,
   faArrowRight,
@@ -9,10 +9,10 @@ import {
   faFont,
   faPencilAlt,
   faShapes,
-  faSlash
-} from '@fortawesome/free-solid-svg-icons'
+  faSlash,
+} from '@fortawesome/free-solid-svg-icons';
 
-import { faCircle, faSquare } from '@fortawesome/free-regular-svg-icons'
+import { faCircle, faSquare } from '@fortawesome/free-regular-svg-icons';
 
 library.add(
   faArrowLeft,
@@ -26,5 +26,5 @@ library.add(
   faPencilAlt,
   faShapes,
   faSlash,
-  faSquare
-)
+  faSquare,
+);
