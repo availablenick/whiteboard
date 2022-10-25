@@ -38,7 +38,7 @@ function Board({ config, setConfig, tool, width, height }) {
     const match = /\/(\w+)/.exec(window.location.pathname);
     if (match) {
       const slug = match[1];
-      socket = io(`ws://localhost:5000/${slug}`, {
+      socket = io(`${process.env.REACT_APP_WEBSOCKET_SERVER_URL}/${slug}`, {
         reconnectionDelayMax: 10000,
       });
 

@@ -1,10 +1,13 @@
+require('dotenv').config();
 const app = require('express')();
 const httpServer = require('http').Server(app);
 const { Server } = require('socket.io');
 const cors = require('cors');
 
+const allowedURLS = process.env.ALLOWED_URLS.split(',');
+
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: allowedURLS,
   optionsSuccessStatus: 200,
 };
 
@@ -12,7 +15,7 @@ app.use(cors(corsOptions));
 
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: allowedURLS,
   }
 });
 
