@@ -107,6 +107,8 @@ const drawText = (canvas, textarea, rowHeight) => {
   }
 };
 
-exports.adjustToCanvasLeft = adjustToCanvasLeft;
-exports.adjustToCanvasTop = adjustToCanvasTop;
-exports.drawText = drawText;
+export {
+  adjustToCanvasLeft,
+  adjustToCanvasTop,
+  drawText,
+};
