@@ -35,14 +35,20 @@ function Segment({ config, x, y, setShapeState }) {
       document.onmouseup = null;
 
       const ctx = canvas.getContext('2d');
-      const leftR = lineShape.getElementsByClassName('left')[0].getBoundingClientRect();
-      const rightR = lineShape.getElementsByClassName('right')[0].getBoundingClientRect();
+      const leftRect = lineShape.getElementsByClassName('left')[0].getBoundingClientRect();
+      const rightRect = lineShape.getElementsByClassName('right')[0].getBoundingClientRect();
       ctx.fillStyle = config.drawing.color;
       ctx.strokeStyle = config.drawing.color;
       ctx.lineWidth = 4;
+
+      const x1 = leftRect.x + leftRect.width / 2 - canvas.offsetLeft;
+      const y1 = leftRect.y + leftRect.height / 2 - canvas.offsetTop;
+      const x2 = rightRect.x + rightRect.width / 2 - canvas.offsetLeft;
+      const y2 = rightRect.y + rightRect.height / 2 - canvas.offsetTop;
+
       ctx.beginPath();
-      ctx.moveTo(leftR.x - canvas.offsetLeft, leftR.y - canvas.offsetTop);
-      ctx.lineTo(rightR.x - canvas.offsetLeft, rightR.y - canvas.offsetTop);
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
       ctx.stroke();
       ctx.closePath();
 

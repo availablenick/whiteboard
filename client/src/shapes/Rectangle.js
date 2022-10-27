@@ -32,15 +32,14 @@ function Rectangle({ config, x, y, setShapeState }) {
       document.onmouseup = null;
 
       const ctx = canvas.getContext('2d');
-      const rect = rectShape.getBoundingClientRect();
       ctx.fillStyle = config.drawing.color;
       ctx.strokeStyle = config.drawing.color;
       ctx.lineWidth = 4;
       ctx.strokeRect(
-        rect.left - canvas.offsetLeft,
-        rect.top - canvas.offsetTop,
-        rect.width,
-        rect.height,
+        rectShape.offsetLeft - canvas.offsetLeft + ctx.lineWidth / 2,
+        rectShape.offsetTop - canvas.offsetTop + ctx.lineWidth / 2,
+        rectShape.offsetWidth - ctx.lineWidth,
+        rectShape.offsetHeight - ctx.lineWidth,
       );
 
       canvas.dispatchEvent(createCanvasChangeEvent());

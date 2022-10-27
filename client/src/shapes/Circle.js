@@ -32,16 +32,15 @@ function Circle({ config, x, y, setShapeState }) {
       document.onmouseup = null;
 
       const ctx = canvas.getContext('2d');
-      const rect = circShape.getBoundingClientRect();
       ctx.fillStyle = config.drawing.color;
       ctx.strokeStyle = config.drawing.color;
       ctx.lineWidth = 4;
       ctx.beginPath();
       ctx.ellipse(
-        rect.left + (rect.width / 2) - canvas.offsetLeft,
-        rect.top + (rect.height / 2) - canvas.offsetTop,
-        rect.width / 2,
-        rect.height / 2,
+        circShape.offsetLeft + (circShape.offsetWidth / 2) - canvas.offsetLeft,
+        circShape.offsetTop + (circShape.offsetHeight / 2) - canvas.offsetTop,
+        (circShape.offsetWidth - ctx.lineWidth) / 2,
+        (circShape.offsetHeight - ctx.lineWidth) / 2,
         0,
         0,
         2 * Math.PI,
