@@ -2,7 +2,7 @@ import bucket from './bucket';
 import circle from './circle';
 import eraser from './eraser';
 import eyeDropper from './eyeDropper';
-import line from './line';
+import segment from './segment';
 import pencil from './pencil';
 import rectangle from './rectangle';
 import text from './text';
@@ -27,9 +27,9 @@ function makeItem(toolName, {
     case 'eyeDropper':
       eyeDropper.setConfig = setConfig;
       return eyeDropper;
-    case 'line':
-      line.setShapeState = setShapeState;
-      return line;
+    case 'segment':
+      segment.setShapeState = setShapeState;
+      return segment;
     case 'pencil':
       pencil.color = config.drawing.color;
       return pencil;

@@ -27,7 +27,7 @@ function Segment({ config, x, y, setShapeState }) {
       width: 0,
     };
 
-    const lineShape = ref.current;
+    const segmentShape = ref.current;
     setStyle(newStyle);
 
     return () => {
@@ -35,8 +35,8 @@ function Segment({ config, x, y, setShapeState }) {
       document.onmouseup = null;
 
       const ctx = canvas.getContext('2d');
-      const leftRect = lineShape.getElementsByClassName('left')[0].getBoundingClientRect();
-      const rightRect = lineShape.getElementsByClassName('right')[0].getBoundingClientRect();
+      const leftRect = segmentShape.getElementsByClassName('left')[0].getBoundingClientRect();
+      const rightRect = segmentShape.getElementsByClassName('right')[0].getBoundingClientRect();
       ctx.fillStyle = config.drawing.color;
       ctx.strokeStyle = config.drawing.color;
       ctx.lineWidth = 4;
@@ -238,7 +238,7 @@ function Segment({ config, x, y, setShapeState }) {
 
   return (
     <div
-      className="line-shape"
+      className="segment-shape"
       style={style}
       ref={ref}
       onMouseDown={handleMouseDown}

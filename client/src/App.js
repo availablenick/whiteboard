@@ -13,7 +13,7 @@ function App() {
     bucket: null,
     text: null,
     shapes: {
-      line: null,
+      segment: null,
       rectangle: null,
       circle: null,
     },

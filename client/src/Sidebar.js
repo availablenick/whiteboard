@@ -14,7 +14,7 @@ const Sidebar = forwardRef((props, ref) => {
     bucket: null,
     text: null,
     shapes: [
-      'line',
+      'segment',
       'rectangle',
       'circle',
     ],

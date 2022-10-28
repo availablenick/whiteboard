@@ -1,4 +1,4 @@
-const line = {
+const segment = {
   setShapeState: () => {},
   getIcon() {
     return ['fas', 'slash'];
@@ -26,4 +26,4 @@ const line = {
   },
 };
 
-export default line;
+export default segment;
