@@ -40,10 +40,12 @@ const bucket = {
 function fillMatchingArea(canvas, sourceX, sourceY, sourceColorComponents, drawingColorComponents) {
   const context = canvas.getContext('2d');
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  if (!shouldFill(canvas, imageData.data, sourceX, sourceY, sourceColorComponents, drawingColorComponents)) {
+  if (!shouldFill(imageData.data, canvas.width, sourceX, sourceY, sourceColorComponents,
+    drawingColorComponents)
+  ) {
     return;
   }
-  
+
   const queue = [[sourceX, sourceY]];
   while (queue.length > 0) {
     const pos = queue.shift();
@@ -51,33 +53,43 @@ function fillMatchingArea(canvas, sourceX, sourceY, sourceColorComponents, drawi
     const y = pos[1];
     let lx = x;
     while (lx >= 1
-      && shouldFill(canvas, imageData.data, lx - 1, y, sourceColorComponents, drawingColorComponents)) {
-      paintPixel(canvas, imageData.data, lx - 1, y, drawingColorComponents);
+      && shouldFill(imageData.data, canvas.width, lx - 1, y, sourceColorComponents,
+        drawingColorComponents)
+    ) {
+      paintPixel(imageData.data, canvas.width, lx - 1, y, drawingColorComponents);
       --lx;
     }
 
     while (x < canvas.width
-      && shouldFill(canvas, imageData.data, x, y, sourceColorComponents, drawingColorComponents)) {
-      paintPixel(canvas, imageData.data, x, y, drawingColorComponents);
+      && shouldFill(imageData.data, canvas.width, x, y, sourceColorComponents,
+        drawingColorComponents)
+    ) {
+      paintPixel(imageData.data, canvas.width, x, y, drawingColorComponents);
       ++x;
     }
 
     if (y >= 1) {
-      scan(canvas, imageData.data, lx, x - 1, y - 1, queue, sourceColorComponents, drawingColorComponents);
+      scan(imageData.data, canvas.width, lx, x - 1, y - 1, queue, sourceColorComponents,
+        drawingColorComponents);
     }
 
     if (y + 1 < canvas.width) {
-      scan(canvas, imageData.data, lx, x - 1, y + 1, queue, sourceColorComponents, drawingColorComponents);
+      scan(imageData.data, canvas.width, lx, x - 1, y + 1, queue, sourceColorComponents,
+        drawingColorComponents);
     }
   }
 
   context.putImageData(imageData, 0, 0);
 }
 
-function scan(canvas, pixelColors, lx, rx, y, queue, sourceColorComponents, drawingColorComponents) {
+function scan(
+  pixelColors, numberOfColumns, lx, rx, y, queue, sourceColorComponents, drawingColorComponents,
+) {
   let foundBoundary = true;
   for (let x = lx; x <= rx; ++x) {
-    if (!shouldFill(canvas, pixelColors, x, y, sourceColorComponents, drawingColorComponents)) {
+    if (!shouldFill(pixelColors, numberOfColumns, x, y, sourceColorComponents,
+      drawingColorComponents)
+    ) {
       foundBoundary = true;
     } else if (foundBoundary) {
       queue.push([x, y]);
@@ -86,16 +98,18 @@ function scan(canvas, pixelColors, lx, rx, y, queue, sourceColorComponents, draw
   }
 }
 
-function paintPixel(canvas, pixelColors, x, y, colorComponents) {
-  const index = calculateIndex(canvas.width, x, y);
+function paintPixel(pixelColors, numberOfColumns, x, y, colorComponents) {
+  const index = calculateIndex(numberOfColumns, x, y);
   pixelColors[index] = colorComponents[0];
   pixelColors[index + 1] = colorComponents[1];
   pixelColors[index + 2] = colorComponents[2];
   pixelColors[index + 3] = colorComponents[3];
 }
 
-function shouldFill(canvas, pixelColors, x, y, sourceColorComponents, drawingColorComponents) {
-  const index = calculateIndex(canvas.width, x, y);
+function shouldFill(
+  pixelColors, numberOfColumns, x, y, sourceColorComponents, drawingColorComponents,
+) {
+  const index = calculateIndex(numberOfColumns, x, y);
   const components = [
     pixelColors[index], pixelColors[index + 1], pixelColors[index + 2], pixelColors[index + 3],
   ];

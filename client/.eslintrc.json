@@ -30,6 +30,9 @@
         "no-plusplus": ["off"],
         "no-multi-assign": ["off"],
         "no-use-before-define": ["off"],
-        "object-curly-newline": ["off"]
+        "object-curly-newline": ["off"],
+        "prefer-destructuring": ["off"],
+        "no-param-reassign": ["error", { "props": false }]
+
     }
 }
