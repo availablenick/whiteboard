@@ -1,4 +1,4 @@
-import { createCanvasChangeEvent } from '../../../global/helpers';
+import createCanvasChangeEvent from '../../../global/helpers';
 
 const eraser = {
   config: {},

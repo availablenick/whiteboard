@@ -2,6 +2,4 @@ function createCanvasChangeEvent() {
   return new CustomEvent('canvas-change');
 }
 
-export {
-  createCanvasChangeEvent,
-};
+export default createCanvasChangeEvent;

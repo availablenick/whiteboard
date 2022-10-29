@@ -1,5 +1,5 @@
-import { createCanvasChangeEvent } from '../../../global/helpers';
-import { getIconFromCanvas } from '../helpers';
+import createCanvasChangeEvent from '../../../global/helpers';
+import getIconFromCanvas from '../helpers';
 
 const bucket = {
   color: '',
@@ -53,29 +53,28 @@ function fillMatchingArea(canvas, sourceX, sourceY, sourceColorComponents, drawi
     let x = pos[0];
     const y = pos[1];
     let lx = x;
-    while (lx >= 1
-      && shouldFill(imageData.data, canvas.width, lx - 1, y, sourceColorComponents,
+    while (lx >= 1 &&
+      shouldFill(imageData.data, canvas.width, lx-1, y, sourceColorComponents,
         drawingColorComponents)
     ) {
-      paintPixel(imageData.data, canvas.width, lx - 1, y, drawingColorComponents);
+      paintPixel(imageData.data, canvas.width, lx-1, y, drawingColorComponents);
       --lx;
     }
 
-    while (x < canvas.width
-      && shouldFill(imageData.data, canvas.width, x, y, sourceColorComponents,
-        drawingColorComponents)
+    while (x < canvas.width &&
+      shouldFill(imageData.data, canvas.width, x, y, sourceColorComponents, drawingColorComponents)
     ) {
       paintPixel(imageData.data, canvas.width, x, y, drawingColorComponents);
       ++x;
     }
 
     if (y >= 1) {
-      scan(imageData.data, canvas.width, lx, x - 1, y - 1, queue, sourceColorComponents,
+      scan(imageData.data, canvas.width, lx, x-1, y-1, queue, sourceColorComponents,
         drawingColorComponents);
     }
 
-    if (y + 1 < canvas.width) {
-      scan(imageData.data, canvas.width, lx, x - 1, y + 1, queue, sourceColorComponents,
+    if (y+1 < canvas.width) {
+      scan(imageData.data, canvas.width, lx, x-1, y+1, queue, sourceColorComponents,
         drawingColorComponents);
     }
   }
@@ -102,9 +101,9 @@ function scan(
 function paintPixel(pixelColors, numberOfColumns, x, y, colorComponents) {
   const index = calculateIndex(numberOfColumns, x, y);
   pixelColors[index] = colorComponents[0];
-  pixelColors[index + 1] = colorComponents[1];
-  pixelColors[index + 2] = colorComponents[2];
-  pixelColors[index + 3] = colorComponents[3];
+  pixelColors[index+1] = colorComponents[1];
+  pixelColors[index+2] = colorComponents[2];
+  pixelColors[index+3] = colorComponents[3];
 }
 
 function shouldFill(
@@ -112,7 +111,7 @@ function shouldFill(
 ) {
   const index = calculateIndex(numberOfColumns, x, y);
   const components = [
-    pixelColors[index], pixelColors[index + 1], pixelColors[index + 2], pixelColors[index + 3],
+    pixelColors[index], pixelColors[index+1], pixelColors[index+2], pixelColors[index+3],
   ];
 
   return colorsMatch(components, sourceColorComponents)

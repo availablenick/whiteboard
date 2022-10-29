@@ -78,12 +78,7 @@ function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
         <Toggler isGroupSelected={isSelected} setIsContentVisible={setIsContentVisible} />
       </span>
 
-      {isContentVisible
-        && (
-        <ul>
-          {toolGroup}
-        </ul>
-        )}
+      {isContentVisible && <ul>{toolGroup}</ul>}
     </div>
   );
 }

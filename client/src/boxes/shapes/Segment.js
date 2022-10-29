@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createCanvasChangeEvent } from '../../global/helpers';
+import createCanvasChangeEvent from '../../global/helpers';
 import { calculateAngle, distance } from './helpers';
 import './Segment.scss';
 
@@ -243,7 +243,6 @@ function Segment({ config, x, y, setShapeState }) {
       ref={segmentRef}
       onMouseDown={handleMouseDown}
     >
-
       {(state.stage === 'positioning' || state.stage === 'reshaping') && points}
     </div>
   );

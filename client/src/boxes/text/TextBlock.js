@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { adjustToCanvasLeft, adjustToCanvasTop, drawText } from './helpers';
-import { createCanvasChangeEvent } from '../../global/helpers';
+import createCanvasChangeEvent from '../../global/helpers';
 import behaviors from '../resizing';
 import './TextBlock.scss';
 import '../resizing.scss';

@@ -20,6 +20,4 @@ function getIconFromCanvas(iconCode, x, y) {
   });
 }
 
-export {
-  getIconFromCanvas,
-};
+export default getIconFromCanvas;

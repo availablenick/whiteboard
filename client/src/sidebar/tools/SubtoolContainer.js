@@ -2,7 +2,7 @@ import React from 'react';
 import Tool from './Tool';
 
 function SubtoolContainer({
-  name, isSelected, icon, isGroupSelected, setTool, setGroupIcon, setGroupState
+  name, isSelected, icon, isGroupSelected, setTool, setGroupIcon, setGroupState,
 }) {
   const handleClick = (event) => {
     const canvas = document.getElementById('canvas');

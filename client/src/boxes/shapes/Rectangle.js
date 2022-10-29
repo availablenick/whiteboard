@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import behaviors from '../resizing';
 import { getQuadrant } from './helpers';
-import { createCanvasChangeEvent } from '../../global/helpers';
+import createCanvasChangeEvent from '../../global/helpers';
 import './Rectangle.scss';
 import '../resizing.scss';
 
@@ -182,7 +182,6 @@ function Rectangle({ config, x, y, setShapeState }) {
       ref={rectangleRef}
       onMouseDown={handleMouseDown}
     >
-
       {stage === 'positioning' && points}
     </div>
   );

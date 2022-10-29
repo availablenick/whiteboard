@@ -1,5 +1,5 @@
 import React, { useState, forwardRef } from 'react';
-import Color from '../color/ColorViewer';
+import ColorViewer from '../color/ColorViewer';
 import Group from './tools/Group';
 import Misc from './misc/Misc';
 import SingleToolContainer from './tools/ToolContainer';
@@ -80,9 +80,7 @@ const Sidebar = forwardRef((props, ref) => {
       </ul>
 
       <ul className="misc-list p-0">
-        <li>
-          <Color config={props.config} setConfig={props.setConfig} />
-        </li>
+        <li><ColorViewer config={props.config} setConfig={props.setConfig} /></li>
         {miscList}
       </ul>
     </aside>
