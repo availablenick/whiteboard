@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Tool from './Tool';
-import makeItem from './res/tools/toolHandler';
+import SubtoolContainer from './SubtoolContainer';
+import makeItem from './items/toolHandler';
 import './Group.scss';
 
-function Group({ name, tools, setTool, isSelected, setSidebarState }) {
+function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
   const ref = useRef(null);
   const initialState = {};
-  Object.keys(tools).forEach((tool) => {
+  Object.keys(subtools).forEach((tool) => {
     initialState[tool] = false;
   });
 
-  initialState[tools[0]] = true;
-  const [icon, setIcon] = useState(makeItem(tools[0], {}).getIcon());
+  initialState[subtools[0]] = true;
+  const [icon, setIcon] = useState(makeItem(subtools[0], {}).getIcon());
   const [state, setState] = useState(initialState);
   const [isContentVisible, setIsContentVisible] = useState(false);
-  const toolsGroup = tools.map((tool) => (
+
+  const toolGroup = subtools.map((tool) => (
     <li key={tool}>
-      <Tool
+      <SubtoolContainer
         name={tool}
         icon={makeItem(tool, {}).getIcon()}
         isSelected={state[tool]}
@@ -31,12 +32,9 @@ function Group({ name, tools, setTool, isSelected, setSidebarState }) {
   useEffect(() => {
     if (isContentVisible) {
       const hideGroup = (event) => {
-        if (event.target === ref.current
-            || ref.current.contains(event.target)) {
-          return;
+        if (!ref.current.contains(event.target)) {
+          setIsContentVisible(false);
         }
-
-        setIsContentVisible(false);
       };
 
       document.addEventListener('mousedown', hideGroup);
@@ -69,42 +67,38 @@ function Group({ name, tools, setTool, isSelected, setSidebarState }) {
     }
   };
 
-  const changeGroupVisibility = (event) => {
-    event.stopPropagation();
-    setIsContentVisible(!isContentVisible);
-  };
-
-  let arrowStyle = {};
-  let blockStyle = {};
-  if (isSelected) {
-    arrowStyle = {
-      borderLeft: '4.5px solid black',
-    };
-
-    blockStyle = {
-      background: 'white',
-      color: 'black',
-    };
-  }
-
   return (
     <div className="tool-group w-100" ref={ref} onClick={handleClick}>
-      <span className="d-inline-block w-100" style={blockStyle}>
+      <span
+        className="d-inline-block w-100"
+        style={isSelected ? { background: '#fff', color: '#000' } : {}}
+      >
         <FontAwesomeIcon icon={icon} />
-        <span
-          className="show-hide"
-          style={arrowStyle}
-          onClick={changeGroupVisibility}
-        />
+        <Toggler isGroupSelected={isSelected} setIsContentVisible={setIsContentVisible} />
       </span>
 
       {isContentVisible
         && (
         <ul>
-          {toolsGroup}
+          {toolGroup}
         </ul>
         )}
     </div>
+  );
+}
+
+function Toggler({ isGroupSelected, setIsContentVisible }) {
+  const changeGroupVisibility = (event) => {
+    event.stopPropagation();
+    setIsContentVisible((prev) => !prev);
+  };
+
+  return (
+    <span
+      className="show-hide"
+      style={isGroupSelected ? { borderLeft: '4.5px solid black' } : {}}
+      onClick={changeGroupVisibility}
+    />
   );
 }
 

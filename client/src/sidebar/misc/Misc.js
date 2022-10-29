@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import makeItem from './res/misc/miscHandler';
+import makeItem from './items/miscHandler';
 import './Misc.scss';
 
 function Misc({ name, icon, setIsSidebarVisible }) {

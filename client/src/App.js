@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Board from './Board';
-import Sidebar from './Sidebar';
+import Sidebar from './sidebar/Sidebar';
 import './App.scss';
 
 function App() {

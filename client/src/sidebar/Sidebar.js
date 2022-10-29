@@ -1,10 +1,10 @@
 import React, { useState, forwardRef } from 'react';
-import Color from './color/Color';
-import Group from './Group';
-import Misc from './Misc';
-import Tool from './Tool';
-import makeTool from './res/tools/toolHandler';
-import makeMiscItem from './res/misc/miscHandler';
+import Color from '../color/Color';
+import Group from './tools/Group';
+import Misc from './misc/Misc';
+import SingleToolContainer from './tools/ToolContainer';
+import makeTool from './tools/items/toolHandler';
+import makeMiscItem from './misc/items/miscHandler';
 import './Sidebar.scss';
 
 const Sidebar = forwardRef((props, ref) => {
@@ -28,13 +28,13 @@ const Sidebar = forwardRef((props, ref) => {
 
   initialState[props.tool] = true;
   const [state, setState] = useState(initialState);
-  const toolsList = Object.keys(state).map((tool) => {
+  const toolList = Object.keys(state).map((tool) => {
     if (toolArrangement[tool] !== null) {
       return (
         <li key={tool}>
           <Group
             name={tool}
-            tools={toolArrangement[tool]}
+            subtools={toolArrangement[tool]}
             isSelected={state[tool]}
             setTool={props.setTool}
             setSidebarState={setState}
@@ -45,7 +45,7 @@ const Sidebar = forwardRef((props, ref) => {
 
     return (
       <li key={tool}>
-        <Tool
+        <SingleToolContainer
           name={tool}
           icon={makeTool(tool, {}).getIcon()}
           isSelected={state[tool]}
@@ -76,7 +76,7 @@ const Sidebar = forwardRef((props, ref) => {
       ref={ref}
     >
       <ul className="tools-list p-0">
-        {toolsList}
+        {toolList}
       </ul>
 
       <ul className="misc-list p-0">

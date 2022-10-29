@@ -1,4 +1,5 @@
-import { createCanvasChangeEvent, getIconFromCanvas } from '../helpers';
+import { createCanvasChangeEvent } from '../../../res/helpers';
+import { getIconFromCanvas } from '../helpers';
 
 const pencil = {
   color: '',

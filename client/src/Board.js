@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import ShapeSelector from './shapes/ShapeSelector';
 import TextBlock from './text/TextBlock';
 import Pointer from './Pointer';
-import makeItem from './res/tools/toolHandler';
+import makeItem from './sidebar/tools/items/toolHandler';
 import './Board.scss';
 
 function Board({ config, setConfig, tool, width, height }) {
