@@ -1,13 +1,18 @@
 import React from 'react';
 import Tool from './Tool';
 
-function SubtoolContainer({ name, isSelected, setTool, icon, setGroupIcon, setGroupState }) {
+function SubtoolContainer({
+  name, isSelected, icon, isGroupSelected, setTool, setGroupIcon, setGroupState
+}) {
   const handleClick = (event) => {
     const canvas = document.getElementById('canvas');
     canvas.focus();
     event.stopPropagation();
-    setTool(name);
     if (!isSelected) {
+      if (isGroupSelected) {
+        setTool(name);
+      }
+
       setGroupIcon(icon);
       setGroupState((prevGroupState) => {
         const newGroupState = {};

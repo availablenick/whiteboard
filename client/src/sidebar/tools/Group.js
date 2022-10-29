@@ -22,9 +22,10 @@ function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
         name={tool}
         icon={makeItem(tool, {}).getIcon()}
         isSelected={state[tool]}
+        isGroupSelected={isSelected}
+        setTool={setTool}
         setGroupIcon={setIcon}
         setGroupState={setState}
-        setTool={setTool}
       />
     </li>
   ));
