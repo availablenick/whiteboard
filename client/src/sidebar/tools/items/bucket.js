@@ -1,4 +1,4 @@
-import { createCanvasChangeEvent } from '../../../res/helpers';
+import { createCanvasChangeEvent } from '../../../global/helpers';
 import { getIconFromCanvas } from '../helpers';
 
 const bucket = {

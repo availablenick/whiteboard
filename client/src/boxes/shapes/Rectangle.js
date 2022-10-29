@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import behaviors from '../resizing';
 import { getQuadrant } from './helpers';
-import { createCanvasChangeEvent } from '../../res/helpers';
+import { createCanvasChangeEvent } from '../../global/helpers';
 import './Rectangle.scss';
 import '../resizing.scss';
 

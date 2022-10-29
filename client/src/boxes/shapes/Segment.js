@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createCanvasChangeEvent } from '../../res/helpers';
+import { createCanvasChangeEvent } from '../../global/helpers';
 import { calculateAngle, distance } from './helpers';
 import './Segment.scss';
 

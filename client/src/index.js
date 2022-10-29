@@ -4,6 +4,6 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './index.scss';
-import './res/fontawesome';
+import './config/fontawesome';
 
 ReactDOM.render(<App />, document.getElementById('root'));
