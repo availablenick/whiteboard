@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ColorPicker from './ColorPicker';
-import './Color.scss';
+import './ColorViewer.scss';
 
-function Color({ config, setConfig }) {
+function ColorViewer({ config, setConfig }) {
   const colorViewerRef = useRef(null);
   const colorPickerRef = useRef(null);
   const [type, setType] = useState('drawing');
@@ -49,7 +49,6 @@ function Color({ config, setConfig }) {
       className="misc d-inline-flex align-items-center justify-content-center
         position-relative w-100"
     >
-
       <span className="color-viewer" ref={colorViewerRef}>
         <span
           className="highlightable drawing"
@@ -77,4 +76,4 @@ function Color({ config, setConfig }) {
   );
 }
 
-export default Color;
+export default ColorViewer;

@@ -1,5 +1,5 @@
 import React, { useState, forwardRef } from 'react';
-import Color from '../color/Color';
+import Color from '../color/ColorViewer';
 import Group from './tools/Group';
 import Misc from './misc/Misc';
 import SingleToolContainer from './tools/ToolContainer';
