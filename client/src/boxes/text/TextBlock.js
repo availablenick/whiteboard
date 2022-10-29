@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { adjustToCanvasLeft, adjustToCanvasTop, drawText } from './helpers';
+import { createCanvasChangeEvent } from '../../global/helpers';
 import behaviors from '../resizing';
 import './TextBlock.scss';
 import '../resizing.scss';
@@ -32,7 +33,7 @@ function TextBlock({ config, x, y, setTextState }) {
     setStyle(newStyle);
     const textarea = document.getElementsByTagName('textarea')[0];
     rowHeight = textarea.offsetHeight / Number(textarea.rows);
-    function handleDocClick(event) {
+    function handleDocumentClick(event) {
       if (event.target === textRef.current || textRef.current.contains(event.target)) {
         return;
       }
@@ -41,6 +42,7 @@ function TextBlock({ config, x, y, setTextState }) {
       context.fillStyle = config.drawing.color;
       context.strokeStyle = config.drawing.color;
       drawText(canvas, textarea, rowHeight);
+      canvas.dispatchEvent(createCanvasChangeEvent());
       if (removal.shouldRemove) {
         setTextState({
           isWriting: false,
@@ -53,13 +55,13 @@ function TextBlock({ config, x, y, setTextState }) {
       }
     }
 
-    document.addEventListener('click', handleDocClick);
+    document.addEventListener('click', handleDocumentClick);
     textarea.focus();
 
     return () => {
       document.onmousemove = null;
       document.onmouseup = null;
-      document.removeEventListener('click', handleDocClick);
+      document.removeEventListener('click', handleDocumentClick);
     };
   }, []);
 
