@@ -7,7 +7,7 @@ import '../resizing.scss';
 
 function Rectangle({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
-  const ref = useRef(null);
+  const rectangleRef = useRef(null);
   const initialStyle = {
     left: '-500px',
     top: '-500px',
@@ -24,7 +24,7 @@ function Rectangle({ config, x, y, setShapeState }) {
       width: 0,
     };
 
-    const rectShape = ref.current;
+    const rectShape = rectangleRef.current;
     setStyle(newStyle);
 
     return () => {
@@ -49,11 +49,11 @@ function Rectangle({ config, x, y, setShapeState }) {
   useEffect(() => {
     if (/shaping/.test(stage)) {
       const newEvent = new MouseEvent('mousedown', { bubbles: true });
-      ref.current.dispatchEvent(newEvent);
+      rectangleRef.current.dispatchEvent(newEvent);
     } else {
       const removeShape = (event) => {
-        if (event.target === ref.current
-            || ref.current.contains(event.target)) {
+        if (event.target === rectangleRef.current
+            || rectangleRef.current.contains(event.target)) {
           return;
         }
 
@@ -88,29 +88,29 @@ function Rectangle({ config, x, y, setShapeState }) {
         const q = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
         behaviors[corners[getQuadrant(p, q)]](
           mouseMoveEvent,
-          ref.current,
+          rectangleRef.current,
           setStyle,
           { height: 0, width: 0 },
         );
       };
     } else {
-      const shiftX = event.clientX - ref.current.offsetLeft;
-      const shiftY = event.clientY - ref.current.offsetTop;
+      const shiftX = event.clientX - rectangleRef.current.offsetLeft;
+      const shiftY = event.clientY - rectangleRef.current.offsetTop;
       document.onmousemove = (mouseMoveEvent) => {
         let xPos = mouseMoveEvent.clientX - shiftX;
         let yPos = mouseMoveEvent.clientY - shiftY;
         const canvasRight = canvas.offsetLeft + canvas.offsetWidth;
         if (xPos < canvas.offsetLeft) {
           xPos = canvas.offsetLeft;
-        } else if (xPos + ref.current.offsetWidth > canvasRight) {
-          xPos = canvasRight - ref.current.offsetWidth;
+        } else if (xPos + rectangleRef.current.offsetWidth > canvasRight) {
+          xPos = canvasRight - rectangleRef.current.offsetWidth;
         }
 
         const canvasBottom = canvas.offsetTop + canvas.offsetHeight;
         if (yPos < canvas.offsetTop) {
           yPos = canvas.offsetTop;
-        } else if (yPos + ref.current.offsetHeight > canvasBottom) {
-          yPos = canvasBottom - ref.current.offsetHeight;
+        } else if (yPos + rectangleRef.current.offsetHeight > canvasBottom) {
+          yPos = canvasBottom - rectangleRef.current.offsetHeight;
         }
 
         setStyle((prevStyle) => ({
@@ -148,7 +148,7 @@ function Rectangle({ config, x, y, setShapeState }) {
       event.stopPropagation();
 
       document.onmousemove = (mouseMoveEvent) => {
-        behaviors[item](mouseMoveEvent, ref.current, setStyle, { height: 1, width: 1 });
+        behaviors[item](mouseMoveEvent, rectangleRef.current, setStyle, { height: 1, width: 1 });
       };
 
       document.onmouseup = () => {
@@ -157,11 +157,11 @@ function Rectangle({ config, x, y, setShapeState }) {
         setStyle({
           ...style,
           bottom: '',
-          height: ref.current.offsetHeight,
-          left: `${ref.current.offsetLeft}px`,
+          height: rectangleRef.current.offsetHeight,
+          left: `${rectangleRef.current.offsetLeft}px`,
           right: '',
-          top: `${ref.current.offsetTop}px`,
-          width: `${ref.current.offsetWidth}px`,
+          top: `${rectangleRef.current.offsetTop}px`,
+          width: `${rectangleRef.current.offsetWidth}px`,
         });
       };
     }
@@ -179,7 +179,7 @@ function Rectangle({ config, x, y, setShapeState }) {
     <div
       className="rect-shape resizable"
       style={style}
-      ref={ref}
+      ref={rectangleRef}
       onMouseDown={handleMouseDown}
     >
 

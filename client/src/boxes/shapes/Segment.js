@@ -5,7 +5,7 @@ import './Segment.scss';
 
 function Segment({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
-  const ref = useRef(null);
+  const segmentRef = useRef(null);
   const initialStyle = {
     left: '-500px',
     top: '-500px',
@@ -27,7 +27,7 @@ function Segment({ config, x, y, setShapeState }) {
       width: 0,
     };
 
-    const segmentShape = ref.current;
+    const segmentShape = segmentRef.current;
     setStyle(newStyle);
 
     return () => {
@@ -59,7 +59,7 @@ function Segment({ config, x, y, setShapeState }) {
   useEffect(() => {
     if (/shaping/.test(state.stage)) {
       const newEvent = new MouseEvent('mousedown', { bubbles: true });
-      ref.current.dispatchEvent(newEvent);
+      segmentRef.current.dispatchEvent(newEvent);
     } else {
       setStyle({
         ...style,
@@ -67,7 +67,7 @@ function Segment({ config, x, y, setShapeState }) {
       });
 
       const removeShape = (event) => {
-        if (event.target === ref.current) {
+        if (event.target === segmentRef.current) {
           return;
         }
 
@@ -119,7 +119,7 @@ function Segment({ config, x, y, setShapeState }) {
         }));
       };
     } else {
-      const rect = ref.current.getBoundingClientRect();
+      const rect = segmentRef.current.getBoundingClientRect();
       const shiftX = event.clientX - rect.left;
       const shiftY = event.clientY - rect.top;
       document.onmousemove = (mouseMoveEvent) => {
@@ -165,7 +165,7 @@ function Segment({ config, x, y, setShapeState }) {
       event.preventDefault();
       event.stopPropagation();
       const pointRect = event.target.getBoundingClientRect();
-      const segRect = ref.current.getBoundingClientRect();
+      const segRect = segmentRef.current.getBoundingClientRect();
       if (position === 'left') {
         let xCoord = null;
         if (Math.abs(pointRect.left - segRect.left) < Math.abs(pointRect.right - segRect.right)) {
@@ -240,7 +240,7 @@ function Segment({ config, x, y, setShapeState }) {
     <div
       className="segment-shape"
       style={style}
-      ref={ref}
+      ref={segmentRef}
       onMouseDown={handleMouseDown}
     >
 

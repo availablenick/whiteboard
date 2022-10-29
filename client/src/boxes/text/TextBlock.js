@@ -12,7 +12,7 @@ const removal = {
 
 function TextBlock({ config, x, y, setTextState }) {
   const canvas = document.getElementById('canvas');
-  const ref = useRef(null);
+  const textRef = useRef(null);
   const initialStyle = {
     left: '-500px',
     top: '-500px',
@@ -23,9 +23,9 @@ function TextBlock({ config, x, y, setTextState }) {
     const newStyle = {
       bottom: '',
       height: '',
-      left: `${adjustToCanvasLeft(x, canvas, ref.current)}px`,
+      left: `${adjustToCanvasLeft(x, canvas, textRef.current)}px`,
       right: '',
-      top: `${adjustToCanvasTop(y, canvas, ref.current)}px`,
+      top: `${adjustToCanvasTop(y, canvas, textRef.current)}px`,
       width: '',
     };
 
@@ -33,7 +33,7 @@ function TextBlock({ config, x, y, setTextState }) {
     const textarea = document.getElementsByTagName('textarea')[0];
     rowHeight = textarea.offsetHeight / Number(textarea.rows);
     function handleDocClick(event) {
-      if (event.target === ref.current || ref.current.contains(event.target)) {
+      if (event.target === textRef.current || textRef.current.contains(event.target)) {
         return;
       }
 
@@ -73,10 +73,10 @@ function TextBlock({ config, x, y, setTextState }) {
   const handleMouseDown = (event) => {
     event.preventDefault();
     event.persist();
-    const shiftX = event.clientX - ref.current.offsetLeft;
-    const shiftY = event.clientY - ref.current.offsetTop;
+    const shiftX = event.clientX - textRef.current.offsetLeft;
+    const shiftY = event.clientY - textRef.current.offsetTop;
     removal.shouldRemove = false;
-    removal.target = ref.current;
+    removal.target = textRef.current;
 
     document.onmousemove = (mouseMoveEvent) => {
       let xPos = mouseMoveEvent.clientX - shiftX;
@@ -84,15 +84,15 @@ function TextBlock({ config, x, y, setTextState }) {
       const canvasRight = canvas.offsetLeft + canvas.offsetWidth;
       if (xPos < canvas.offsetLeft) {
         xPos = canvas.offsetLeft;
-      } else if (xPos + ref.current.offsetWidth > canvasRight) {
-        xPos = canvasRight - ref.current.offsetWidth;
+      } else if (xPos + textRef.current.offsetWidth > canvasRight) {
+        xPos = canvasRight - textRef.current.offsetWidth;
       }
 
       const canvasBottom = canvas.offsetTop + canvas.offsetHeight;
       if (yPos < canvas.offsetTop) {
         yPos = canvas.offsetTop;
-      } else if (yPos + ref.current.offsetHeight > canvasBottom) {
-        yPos = canvasBottom - ref.current.offsetHeight;
+      } else if (yPos + textRef.current.offsetHeight > canvasBottom) {
+        yPos = canvasBottom - textRef.current.offsetHeight;
       }
 
       setStyle((prevStyle) => ({
@@ -134,7 +134,7 @@ function TextBlock({ config, x, y, setTextState }) {
 
     if (rows > Number(textarea.rows)) {
       const canvasBottom = canvas.offsetTop + canvas.offsetHeight;
-      const topWithBorder = ref.current.offsetTop + 2 * ref.current.clientTop;
+      const topWithBorder = textRef.current.offsetTop + 2 * textRef.current.clientTop;
       let blockHeight = '';
       if (topWithBorder + rows * rowHeight > canvasBottom) {
         const height = canvasBottom - topWithBorder;
@@ -171,7 +171,7 @@ function TextBlock({ config, x, y, setTextState }) {
       removal.target = event.target;
 
       document.onmousemove = (mouseMoveEvent) => {
-        behaviors[item](mouseMoveEvent, ref.current, setStyle, { height: 25, width: 25 });
+        behaviors[item](mouseMoveEvent, textRef.current, setStyle, { height: 25, width: 25 });
       };
 
       document.onmouseup = () => {
@@ -179,14 +179,14 @@ function TextBlock({ config, x, y, setTextState }) {
         document.onmouseup = null;
         setStyle({
           bottom: '',
-          height: ref.current.offsetHeight,
-          left: `${ref.current.offsetLeft}px`,
+          height: textRef.current.offsetHeight,
+          left: `${textRef.current.offsetLeft}px`,
           right: '',
-          top: `${ref.current.offsetTop}px`,
-          width: `${ref.current.offsetWidth}px`,
+          top: `${textRef.current.offsetTop}px`,
+          width: `${textRef.current.offsetWidth}px`,
         });
 
-        const textarea = ref.current.getElementsByTagName('textarea')[0];
+        const textarea = textRef.current.getElementsByTagName('textarea')[0];
         let newRowsNumber = textarea.offsetHeight / rowHeight;
         if (newRowsNumber < 1) {
           newRowsNumber = 1;
@@ -211,7 +211,7 @@ function TextBlock({ config, x, y, setTextState }) {
     <div
       className="text-block resizable"
       style={style}
-      ref={ref}
+      ref={textRef}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >

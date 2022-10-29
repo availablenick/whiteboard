@@ -7,7 +7,7 @@ import makeItem from './sidebar/tools/items/toolHandler';
 import './Board.scss';
 
 function Board({ config, setConfig, tool, width, height }) {
-  const ref = useRef(null);
+  const canvasRef = useRef(null);
   const [cursor, setCursor] = useState('');
   const [textState, setTextState] = useState({ isWriting: false });
   const [shapeState, setShapeState] = useState({ isShaping: false });
@@ -27,7 +27,7 @@ function Board({ config, setConfig, tool, width, height }) {
     };
 
     let socket = null;
-    const canvas = ref.current;
+    const canvas = canvasRef.current;
     const match = /\/(\w+)/.exec(window.location.pathname);
     if (match) {
       const slug = match[1];
@@ -35,8 +35,8 @@ function Board({ config, setConfig, tool, width, height }) {
         reconnectionDelayMax: 10000,
       });
 
-      setUpSocketListeners(socket, ref.current, { setId, setConnectedUsers });
-      ref.current.addEventListener('canvas-change', canvasChangeListener);
+      setUpSocketListeners(socket, canvasRef.current, { setId, setConnectedUsers });
+      canvasRef.current.addEventListener('canvas-change', canvasChangeListener);
       document.addEventListener('mousemove', mouseMoveListener);
     }
 
@@ -54,8 +54,8 @@ function Board({ config, setConfig, tool, width, height }) {
   }, []);
 
   useEffect(() => {
-    ref.current.focus();
-    const ctx = ref.current.getContext('2d');
+    canvasRef.current.focus();
+    const ctx = canvasRef.current.getContext('2d');
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, width, height);
   }, [width, height]);
@@ -86,7 +86,7 @@ function Board({ config, setConfig, tool, width, height }) {
         tabIndex="-1"
         width={width}
         height={height}
-        ref={ref}
+        ref={canvasRef}
         style={{ cursor, boxShadow: '10px 10px 20px black' }}
         onClick={handleClick}
         onKeyDown={invokeToolAction}

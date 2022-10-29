@@ -7,7 +7,7 @@ import '../resizing.scss';
 
 function Circle({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
-  const ref = useRef(null);
+  const circleRef = useRef(null);
   const initialStyle = {
     left: '-500px',
     top: '-500px',
@@ -24,7 +24,7 @@ function Circle({ config, x, y, setShapeState }) {
       width: 0,
     };
 
-    const circShape = ref.current;
+    const circShape = circleRef.current;
     setStyle(newStyle);
 
     return () => {
@@ -56,11 +56,11 @@ function Circle({ config, x, y, setShapeState }) {
   useEffect(() => {
     if (/shaping/.test(stage)) {
       const newEvent = new MouseEvent('mousedown', { bubbles: true });
-      ref.current.dispatchEvent(newEvent);
+      circleRef.current.dispatchEvent(newEvent);
     } else {
       const removeShape = (event) => {
-        if (event.target === ref.current
-            || ref.current.contains(event.target)) {
+        if (event.target === circleRef.current
+            || circleRef.current.contains(event.target)) {
           return;
         }
 
@@ -95,29 +95,29 @@ function Circle({ config, x, y, setShapeState }) {
         const q = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
         behaviors[corners[getQuadrant(p, q)]](
           mouseMoveEvent,
-          ref.current,
+          circleRef.current,
           setStyle,
           { height: 0, width: 0 },
         );
       };
     } else {
-      const shiftX = event.clientX - ref.current.offsetLeft;
-      const shiftY = event.clientY - ref.current.offsetTop;
+      const shiftX = event.clientX - circleRef.current.offsetLeft;
+      const shiftY = event.clientY - circleRef.current.offsetTop;
       document.onmousemove = (mouseMoveEvent) => {
         let xPos = mouseMoveEvent.clientX - shiftX;
         let yPos = mouseMoveEvent.clientY - shiftY;
         const canvasRight = canvas.offsetLeft + canvas.offsetWidth;
         if (xPos < canvas.offsetLeft) {
           xPos = canvas.offsetLeft;
-        } else if (xPos + ref.current.offsetWidth > canvasRight) {
-          xPos = canvasRight - ref.current.offsetWidth;
+        } else if (xPos + circleRef.current.offsetWidth > canvasRight) {
+          xPos = canvasRight - circleRef.current.offsetWidth;
         }
 
         const canvasBottom = canvas.offsetTop + canvas.offsetHeight;
         if (yPos < canvas.offsetTop) {
           yPos = canvas.offsetTop;
-        } else if (yPos + ref.current.offsetHeight > canvasBottom) {
-          yPos = canvasBottom - ref.current.offsetHeight;
+        } else if (yPos + circleRef.current.offsetHeight > canvasBottom) {
+          yPos = canvasBottom - circleRef.current.offsetHeight;
         }
 
         setStyle((prevStyle) => ({
@@ -155,7 +155,7 @@ function Circle({ config, x, y, setShapeState }) {
       event.stopPropagation();
 
       function mouseMove(mouseMoveEvent) {
-        behaviors[item](mouseMoveEvent, ref.current, setStyle, { height: 1, width: 1 });
+        behaviors[item](mouseMoveEvent, circleRef.current, setStyle, { height: 1, width: 1 });
       }
 
       document.addEventListener('mousemove', mouseMove);
@@ -165,11 +165,11 @@ function Circle({ config, x, y, setShapeState }) {
         setStyle({
           ...style,
           bottom: '',
-          height: ref.current.offsetHeight,
-          left: `${ref.current.offsetLeft}px`,
+          height: circleRef.current.offsetHeight,
+          left: `${circleRef.current.offsetLeft}px`,
           right: '',
-          top: `${ref.current.offsetTop}px`,
-          width: `${ref.current.offsetWidth}px`,
+          top: `${circleRef.current.offsetTop}px`,
+          width: `${circleRef.current.offsetWidth}px`,
         });
       };
     }
@@ -187,10 +187,9 @@ function Circle({ config, x, y, setShapeState }) {
     <div
       className="circle-shape resizable"
       style={style}
-      ref={ref}
+      ref={circleRef}
       onMouseDown={handleMouseDown}
     >
-
       {stage === 'positioning' && points}
     </div>
   );

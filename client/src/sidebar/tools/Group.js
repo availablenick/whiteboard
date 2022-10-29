@@ -5,7 +5,7 @@ import makeItem from './items/toolHandler';
 import './Group.scss';
 
 function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
-  const ref = useRef(null);
+  const groupRef = useRef(null);
   const initialState = {};
   Object.keys(subtools).forEach((tool) => {
     initialState[tool] = false;
@@ -33,7 +33,7 @@ function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
   useEffect(() => {
     if (isContentVisible) {
       const hideGroup = (event) => {
-        if (!ref.current.contains(event.target)) {
+        if (!groupRef.current.contains(event.target)) {
           setIsContentVisible(false);
         }
       };
@@ -69,7 +69,7 @@ function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
   };
 
   return (
-    <div className="tool-group w-100" ref={ref} onClick={handleClick}>
+    <div className="tool-group w-100" ref={groupRef} onClick={handleClick}>
       <span
         className="d-inline-block w-100"
         style={isSelected ? { background: '#fff', color: '#000' } : {}}
