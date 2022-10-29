@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { adjustToCanvasLeft, adjustToCanvasTop, drawText } from './helpers';
-import behaviors from '../res/resizing';
+import behaviors from '../resizing';
 import './TextBlock.scss';
-import '../res/resizable.scss';
+import '../resizing.scss';
 
 let rowHeight = 0;
 const removal = {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import behaviors from '../res/resizing';
+import behaviors from '../resizing';
 import { getQuadrant } from './helpers';
-import { createCanvasChangeEvent } from '../res/helpers';
-import './Rectangle.scss';
-import '../res/resizable.scss';
+import { createCanvasChangeEvent } from '../../res/helpers';
+import './Circle.scss';
+import '../resizing.scss';
 
-function Rectangle({ config, x, y, setShapeState }) {
+function Circle({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
   const ref = useRef(null);
   const initialStyle = {
@@ -24,7 +24,7 @@ function Rectangle({ config, x, y, setShapeState }) {
       width: 0,
     };
 
-    const rectShape = ref.current;
+    const circShape = ref.current;
     setStyle(newStyle);
 
     return () => {
@@ -35,12 +35,19 @@ function Rectangle({ config, x, y, setShapeState }) {
       ctx.fillStyle = config.drawing.color;
       ctx.strokeStyle = config.drawing.color;
       ctx.lineWidth = 4;
-      ctx.strokeRect(
-        rectShape.offsetLeft - canvas.offsetLeft + ctx.lineWidth / 2,
-        rectShape.offsetTop - canvas.offsetTop + ctx.lineWidth / 2,
-        rectShape.offsetWidth - ctx.lineWidth,
-        rectShape.offsetHeight - ctx.lineWidth,
+      ctx.beginPath();
+      ctx.ellipse(
+        circShape.offsetLeft + (circShape.offsetWidth / 2) - canvas.offsetLeft,
+        circShape.offsetTop + (circShape.offsetHeight / 2) - canvas.offsetTop,
+        (circShape.offsetWidth - ctx.lineWidth) / 2,
+        (circShape.offsetHeight - ctx.lineWidth) / 2,
+        0,
+        0,
+        2 * Math.PI,
       );
+
+      ctx.stroke();
+      ctx.closePath();
 
       canvas.dispatchEvent(createCanvasChangeEvent());
     };
@@ -147,12 +154,13 @@ function Rectangle({ config, x, y, setShapeState }) {
       event.persist();
       event.stopPropagation();
 
-      document.onmousemove = (mouseMoveEvent) => {
+      function mouseMove(mouseMoveEvent) {
         behaviors[item](mouseMoveEvent, ref.current, setStyle, { height: 1, width: 1 });
-      };
+      }
 
+      document.addEventListener('mousemove', mouseMove);
       document.onmouseup = () => {
-        document.onmousemove = null;
+        document.removeEventListener('mousemove', mouseMove);
         document.onmouseup = null;
         setStyle({
           ...style,
@@ -177,7 +185,7 @@ function Rectangle({ config, x, y, setShapeState }) {
 
   return (
     <div
-      className="rect-shape resizable"
+      className="circle-shape resizable"
       style={style}
       ref={ref}
       onMouseDown={handleMouseDown}
@@ -188,4 +196,4 @@ function Rectangle({ config, x, y, setShapeState }) {
   );
 }
 
-export default Rectangle;
+export default Circle;

@@ -48,7 +48,6 @@ const drawText = (canvas, textarea, rowHeight) => {
     let counter = 1;
     let spaceIndex = -1;
     let i = 0;
-    // for (let char of text) {
     Array.from(text).forEach((char) => {
       if (char === ' ') {
         spaceIndex = i;

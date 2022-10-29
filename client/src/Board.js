@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
-import ShapeSelector from './shapes/ShapeSelector';
-import TextBlock from './text/TextBlock';
+import ShapeSelector from './boxes/shapes/ShapeSelector';
+import TextBlock from './boxes/text/TextBlock';
 import Pointer from './Pointer';
 import makeItem from './sidebar/tools/items/toolHandler';
 import './Board.scss';
