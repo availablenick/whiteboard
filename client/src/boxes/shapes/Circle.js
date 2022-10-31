@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import behaviors from '../resizing';
+import Resizer from '../resizing/Resizer';
 import { getQuadrant } from './helpers';
 import createCanvasChangeEvent from '../../global/helpers';
+import getElementMeasurements from '../helpers';
+import resize from '../resizing/handler';
 import './Circle.scss';
-import '../resizing.scss';
 
 function Circle({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
@@ -93,11 +94,13 @@ function Circle({ config, x, y, setShapeState }) {
 
       document.onmousemove = (mouseMoveEvent) => {
         const q = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
-        behaviors[corners[getQuadrant(p, q)]](
+        resize(
+          corners[getQuadrant(p, q)],
           mouseMoveEvent,
           circleRef.current,
           setStyle,
-          { height: 0, width: 0 },
+          0,
+          0,
         );
       };
     } else {
@@ -148,49 +151,25 @@ function Circle({ config, x, y, setShapeState }) {
     'top-left',
   ];
 
-  const points = positions.map((item) => {
-    function resMouseDown(event) {
-      event.preventDefault();
-      event.persist();
-      event.stopPropagation();
-
-      function mouseMove(mouseMoveEvent) {
-        behaviors[item](mouseMoveEvent, circleRef.current, setStyle, { height: 1, width: 1 });
-      }
-
-      document.addEventListener('mousemove', mouseMove);
-      document.onmouseup = () => {
-        document.removeEventListener('mousemove', mouseMove);
-        document.onmouseup = null;
-        setStyle({
-          ...style,
-          bottom: '',
-          height: circleRef.current.offsetHeight,
-          left: `${circleRef.current.offsetLeft}px`,
-          right: '',
-          top: `${circleRef.current.offsetTop}px`,
-          width: `${circleRef.current.offsetWidth}px`,
-        });
-      };
-    }
-
-    return (
-      <div
-        key={item}
-        className={`res ${item}`}
-        onMouseDown={resMouseDown}
-      />
-    );
-  });
+  const resizers = positions.map((position) => (
+    <Resizer
+      key={position}
+      position={position}
+      boxMeasurements={getElementMeasurements(circleRef.current)}
+      setStyle={setStyle}
+      heightLowerBound={1}
+      widthLowerBound={1}
+    />
+  ));
 
   return (
     <div
-      className="circle-shape resizable"
+      className="circle-shape"
       style={style}
       ref={circleRef}
       onMouseDown={handleMouseDown}
     >
-      {stage === 'positioning' && points}
+      {stage === 'positioning' && resizers}
     </div>
   );
 }

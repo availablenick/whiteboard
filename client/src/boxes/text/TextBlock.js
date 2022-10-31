@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Resizer from '../resizing/Resizer';
 import { adjustToCanvasLeft, adjustToCanvasTop, drawText } from './helpers';
 import createCanvasChangeEvent from '../../global/helpers';
-import behaviors from '../resizing';
+import getElementMeasurements from '../helpers';
 import './TextBlock.scss';
-import '../resizing.scss';
 
 let rowHeight = 0;
 const removal = {
@@ -19,6 +19,7 @@ function TextBlock({ config, x, y, setTextState }) {
     top: '-500px',
   };
 
+  const [isPositioned, setIsPositioned] = useState(false);
   const [style, setStyle] = useState(initialStyle);
   useEffect(() => {
     const newStyle = {
@@ -153,71 +154,46 @@ function TextBlock({ config, x, y, setTextState }) {
     }
   };
 
-  const positions = [
-    'top',
-    'top-right',
-    'right',
-    'bottom-right',
-    'bottom',
-    'bottom-left',
-    'left',
-    'top-left',
-  ];
-
-  const points = positions.map((item) => {
-    function resMouseDown(event) {
-      event.preventDefault();
-      event.persist();
-      event.stopPropagation();
-      removal.shouldRemove = false;
-      removal.target = event.target;
-
-      document.onmousemove = (mouseMoveEvent) => {
-        behaviors[item](mouseMoveEvent, textRef.current, setStyle, { height: 25, width: 25 });
-      };
-
-      document.onmouseup = () => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-        setStyle({
-          bottom: '',
-          height: textRef.current.offsetHeight,
-          left: `${textRef.current.offsetLeft}px`,
-          right: '',
-          top: `${textRef.current.offsetTop}px`,
-          width: `${textRef.current.offsetWidth}px`,
-        });
-
-        const textarea = textRef.current.getElementsByTagName('textarea')[0];
-        let newRowsNumber = textarea.offsetHeight / rowHeight;
-        if (newRowsNumber < 1) {
-          newRowsNumber = 1;
-        }
-
-        textarea.rows = newRowsNumber;
-        removal.shouldRemove = true;
-        removal.target = null;
-      };
+  useEffect(() => {
+    if (textRef.current.offsetLeft >= 0) {
+      setIsPositioned(true);
     }
+  }, [textRef.current]);
 
-    return (
-      <div
-        key={item}
-        className={`res ${item}`}
-        onMouseDown={resMouseDown}
+  let resizers = [];
+  if (isPositioned) {
+    const positions = [
+      'top',
+      'top-right',
+      'right',
+      'bottom-right',
+      'bottom',
+      'bottom-left',
+      'left',
+      'top-left',
+    ];
+
+    resizers = positions.map((position) => (
+      <Resizer
+        key={position}
+        position={position}
+        boxMeasurements={getElementMeasurements(textRef.current)}
+        setStyle={setStyle}
+        heightLowerBound={25}
+        widthLowerBound={25}
       />
-    );
-  });
+    ));
+  }
 
   return (
     <div
-      className="text-block resizable"
+      className="text-block"
       style={style}
       ref={textRef}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >
-      {points}
+      {isPositioned && resizers}
       <textarea
         rows="1"
         cols="7"

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import behaviors from '../resizing';
+import Resizer from '../resizing/Resizer';
 import { getQuadrant } from './helpers';
 import createCanvasChangeEvent from '../../global/helpers';
+import getElementMeasurements from '../helpers';
+import resize from '../resizing/handler';
 import './Rectangle.scss';
-import '../resizing.scss';
 
 function Rectangle({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
@@ -86,11 +87,13 @@ function Rectangle({ config, x, y, setShapeState }) {
 
       document.onmousemove = (mouseMoveEvent) => {
         const q = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
-        behaviors[corners[getQuadrant(p, q)]](
+        resize(
+          corners[getQuadrant(p, q)],
           mouseMoveEvent,
           rectangleRef.current,
           setStyle,
-          { height: 0, width: 0 },
+          0,
+          0,
         );
       };
     } else {
@@ -141,48 +144,20 @@ function Rectangle({ config, x, y, setShapeState }) {
     'top-left',
   ];
 
-  const points = positions.map((item) => {
-    function resMouseDown(event) {
-      event.preventDefault();
-      event.persist();
-      event.stopPropagation();
-
-      document.onmousemove = (mouseMoveEvent) => {
-        behaviors[item](mouseMoveEvent, rectangleRef.current, setStyle, { height: 1, width: 1 });
-      };
-
-      document.onmouseup = () => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-        setStyle({
-          ...style,
-          bottom: '',
-          height: rectangleRef.current.offsetHeight,
-          left: `${rectangleRef.current.offsetLeft}px`,
-          right: '',
-          top: `${rectangleRef.current.offsetTop}px`,
-          width: `${rectangleRef.current.offsetWidth}px`,
-        });
-      };
-    }
-
-    return (
-      <div
-        key={item}
-        className={`res ${item}`}
-        onMouseDown={resMouseDown}
-      />
-    );
-  });
+  const resizers = positions.map((position) => (
+    <Resizer
+      key={position}
+      position={position}
+      boxMeasurements={getElementMeasurements(rectangleRef.current)}
+      setStyle={setStyle}
+      heightLowerBound={1}
+      widthLowerBound={1}
+    />
+  ));
 
   return (
-    <div
-      className="rect-shape resizable"
-      style={style}
-      ref={rectangleRef}
-      onMouseDown={handleMouseDown}
-    >
-      {stage === 'positioning' && points}
+    <div className="rect-shape" style={style} ref={rectangleRef} onMouseDown={handleMouseDown}>
+      {stage === 'positioning' && resizers}
     </div>
   );
 }

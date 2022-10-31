@@ -1,0 +1,24 @@
+.res {
+  background: #fff;
+  border: 1px solid black;
+  display: inline-block;
+  height: 6px;
+  position: absolute;
+  width: 6px;
+}
+
+.res.top, .res.bottom {
+  cursor: n-resize;
+}
+
+.res.left, .res.right {
+  cursor: e-resize;
+}
+
+.res.top-left, .res.bottom-right {
+  cursor: nw-resize;
+}
+
+.res.top-right, .res.bottom-left {
+  cursor: ne-resize;
+}
