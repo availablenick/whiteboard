@@ -1,13 +1,13 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import makeItem from './items/miscHandler';
+import { executeAction } from './items/miscHandler';
 import './Misc.scss';
 
 function Misc({ name, icon, setIsSidebarVisible }) {
   const params = { setIsSidebarVisible };
 
   const handleClick = (event) => {
-    makeItem(name, params).executeAction(event);
+    executeAction(name, event, params);
   };
 
   return (

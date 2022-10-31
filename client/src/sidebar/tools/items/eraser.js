@@ -1,75 +1,72 @@
 import createCanvasChangeEvent from '../../../global/helpers';
 
-const eraser = {
-  config: {},
-  setConfig: () => {},
-  getIcon() {
-    return ['fas', 'eraser'];
-  },
-  getCursor() {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = this.config.eraser.size;
-    canvas.height = this.config.eraser.size;
-    context.fillStyle = this.config.erasing.color;
-    context.strokeRect(0, 0, canvas.width, canvas.height);
-    context.fillRect(1, 1, canvas.width - 2, canvas.height - 2);
-    const dataURL = canvas.toDataURL();
+function getIcon() {
+  return ['fas', 'eraser'];
+}
 
-    return `url("${dataURL}"), auto`;
-  },
-  executeAction(event) {
-    if (event.type === 'keydown' && event.shiftKey && !event.ctrlKey) {
-      setNewSize(event, this.config.eraser.size, this.config, this.setConfig);
-      return;
-    }
+function getCursor(config) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  canvas.width = config.eraser.size;
+  canvas.height = config.eraser.size;
+  context.fillStyle = config.erasing.color;
+  context.strokeRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(1, 1, canvas.width - 2, canvas.height - 2);
+  const dataURL = canvas.toDataURL();
 
-    const canvas = event.target;
-    const context = canvas.getContext('2d');
-    context.fillStyle = this.config.erasing.color;
-    context.strokeStyle = this.config.erasing.color;
+  return `url("${dataURL}"), auto`;
+}
 
-    const x = event.clientX - canvas.offsetLeft;
-    const y = event.clientY - canvas.offsetTop;
-    const previousX = x - event.movementX;
-    const previousY = y - event.movementY;
+function executeAction(event, config, setConfig) {
+  if (event.type === 'keydown' && event.shiftKey && !event.ctrlKey) {
+    setConfig({
+      ...config,
+      eraser: { size: calculateNewSize(event, config.eraser.size) },
+    });
 
-    const NO_BUTTON = 0;
-    if (event.type === 'mousedown' && event.button === NO_BUTTON) {
-      context.fillRect(x, y - 1, this.config.eraser.size, this.config.eraser.size);
-      canvas.dispatchEvent(createCanvasChangeEvent());
-      return;
-    }
-
-    const LEFT_BUTTON = 1;
-    if (event.type === 'mousemove' && event.buttons === LEFT_BUTTON) {
-      if (x === previousX) {
-        fillVerticalPath(x, previousY, y, this.config.eraser.size, context);
-      } else {
-        fillDiagonalPath(previousX, previousY, x, y, this.config.eraser.size, context);
-      }
-
-      canvas.dispatchEvent(createCanvasChangeEvent());
-    }
-  },
-};
-
-export default eraser;
-
-function setNewSize(event, size, config, setConfig) {
-  const UPPER_BOUND = 48;
-  const LOWER_BOUND = 4;
-  let newsize = size;
-  if (event.key === '+') {
-    newsize = size + 1 > UPPER_BOUND ? UPPER_BOUND : size + 1;
-  } else if (event.key === '-') {
-    newsize = size - 1 < LOWER_BOUND ? LOWER_BOUND : size - 1;
+    return;
   }
 
-  setConfig({
-    ...config,
-    eraser: { size: newsize },
-  });
+  const canvas = event.target;
+  const context = canvas.getContext('2d');
+  context.fillStyle = config.erasing.color;
+  context.strokeStyle = config.erasing.color;
+
+  const x = event.clientX - canvas.offsetLeft;
+  const y = event.clientY - canvas.offsetTop;
+  const previousX = x - event.movementX;
+  const previousY = y - event.movementY;
+
+  const NO_BUTTON = 0;
+  if (event.type === 'mousedown' && event.button === NO_BUTTON) {
+    context.fillRect(x, y - 1, config.eraser.size, config.eraser.size);
+    canvas.dispatchEvent(createCanvasChangeEvent());
+    return;
+  }
+
+  const LEFT_BUTTON = 1;
+  if (event.type === 'mousemove' && event.buttons === LEFT_BUTTON) {
+    if (x === previousX) {
+      fillVerticalPath(x, previousY, y, config.eraser.size, context);
+    } else {
+      fillDiagonalPath(previousX, previousY, x, y, config.eraser.size, context);
+    }
+
+    canvas.dispatchEvent(createCanvasChangeEvent());
+  }
+}
+
+function calculateNewSize(event, currentSize) {
+  const UPPER_BOUND = 48;
+  const LOWER_BOUND = 4;
+  let newSize = currentSize;
+  if (event.key === '+') {
+    newSize = currentSize + 1 > UPPER_BOUND ? UPPER_BOUND : currentSize + 1;
+  } else if (event.key === '-') {
+    newSize = currentSize - 1 < LOWER_BOUND ? LOWER_BOUND : currentSize - 1;
+  }
+
+  return newSize;
 }
 
 function fillVerticalPath(x, sourceY, destY, size, context) {
@@ -111,3 +108,9 @@ function destYWasReached(sourceY, destY, currentY) {
   return (sourceY < destY && currentY >= destY - 1)
          || (sourceY >= destY && currentY <= destY + 1);
 }
+
+export default {
+  getIcon,
+  getCursor,
+  executeAction,
+};

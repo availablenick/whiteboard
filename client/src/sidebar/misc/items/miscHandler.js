@@ -1,13 +1,12 @@
 import clearer from './clearer';
 import hider from './hider';
 
-function makeItem(miscItemName, { setIsSidebarVisible }) {
-  switch (miscItemName) {
+function getIcon(item) {
+  switch (item) {
     case 'clearer':
-      return clearer;
+      return clearer.getIcon();
     case 'hider':
-      hider.setIsSidebarVisible = setIsSidebarVisible;
-      return hider;
+      return hider.getIcon();
     default:
       break;
   }
@@ -15,4 +14,20 @@ function makeItem(miscItemName, { setIsSidebarVisible }) {
   return null;
 }
 
-export default makeItem;
+function executeAction(item, event, { setIsSidebarVisible }) {
+  switch (item) {
+    case 'clearer':
+      clearer.executeAction(event);
+      break;
+    case 'hider':
+      hider.executeAction(event, setIsSidebarVisible);
+      break;
+    default:
+      break;
+  }
+}
+
+export {
+  getIcon,
+  executeAction,
+};

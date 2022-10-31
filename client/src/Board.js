@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import ShapeSelector from './boxes/shapes/ShapeSelector';
 import TextBlock from './boxes/text/TextBlock';
 import Pointer from './Pointer';
-import makeItem from './sidebar/tools/items/toolHandler';
+import { getCursor, executeAction } from './sidebar/tools/items/toolHandler';
 import './Board.scss';
 
 function Board({ config, setConfig, tool, width, height }) {
@@ -13,8 +13,6 @@ function Board({ config, setConfig, tool, width, height }) {
   const [shapeState, setShapeState] = useState({ isShaping: false });
   const [id, setId] = useState('');
   const [connectedUsers, setConnectedUsers] = useState({});
-
-  const params = { config, setConfig, setShapeState, setTextState };
 
   useEffect(() => {
     const canvasChangeListener = (event) => {
@@ -61,11 +59,11 @@ function Board({ config, setConfig, tool, width, height }) {
   }, [width, height]);
 
   useEffect(() => {
-    (async () => { setCursor(await makeItem(tool, params).getCursor()); })();
+    (async () => { setCursor(await getCursor(tool, config)); })();
   }, [tool, config.eraser.size, config.erasing.color]);
 
   const invokeToolAction = (event) => {
-    makeItem(tool, params).executeAction(event);
+    executeAction(tool, event, { config, setConfig, setShapeState, setTextState });
   };
 
   const handleClick = (event) => {

@@ -3,8 +3,8 @@ import ColorViewer from '../color/ColorViewer';
 import Group from './tools/Group';
 import Misc from './misc/Misc';
 import ToolContainer from './tools/ToolContainer';
-import makeTool from './tools/items/toolHandler';
-import makeMiscItem from './misc/items/miscHandler';
+import { getIcon as getToolIcon } from './tools/items/toolHandler';
+import { getIcon as getMiscIcon } from './misc/items/miscHandler';
 import './Sidebar.scss';
 
 const Sidebar = forwardRef((props, ref) => {
@@ -47,7 +47,7 @@ const Sidebar = forwardRef((props, ref) => {
       <li key={tool}>
         <ToolContainer
           name={tool}
-          icon={makeTool(tool, {}).getIcon()}
+          icon={getToolIcon(tool)}
           isSelected={state[tool]}
           setTool={props.setTool}
           setSidebarState={setState}
@@ -61,7 +61,7 @@ const Sidebar = forwardRef((props, ref) => {
     <li key={item}>
       <Misc
         name={item}
-        icon={makeMiscItem(item, {}).getIcon()}
+        icon={getMiscIcon(item)}
         config={props.config}
         setConfig={props.setConfig}
         setIsSidebarVisible={props.setIsSidebarVisible}

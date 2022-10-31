@@ -1,12 +1,13 @@
-const hider = {
-  setIsSidebarVisible: () => {},
-  getIcon() {
-    return ['fas', 'arrow-left'];
-  },
-  executeAction(event) {
-    event.stopPropagation();
-    this.setIsSidebarVisible(false);
-  },
-};
+function getIcon() {
+  return ['fas', 'arrow-left'];
+}
 
-export default hider;
+function executeAction(event, setIsSidebarVisible) {
+  event.stopPropagation();
+  setIsSidebarVisible(false);
+}
+
+export default {
+  getIcon,
+  executeAction,
+};

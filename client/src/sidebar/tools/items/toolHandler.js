@@ -7,38 +7,24 @@ import pencil from './pencil';
 import rectangle from './rectangle';
 import text from './text';
 
-function makeItem(toolName, {
-  config = { drawing: {} },
-  setConfig,
-  setShapeState,
-  setTextState,
-}) {
-  switch (toolName) {
+function getIcon(tool) {
+  switch (tool) {
     case 'bucket':
-      bucket.color = config.drawing.color;
-      return bucket;
+      return bucket.getIcon();
     case 'circle':
-      circle.setShapeState = setShapeState;
-      return circle;
+      return circle.getIcon();
     case 'eraser':
-      eraser.config = config;
-      eraser.setConfig = setConfig;
-      return eraser;
+      return eraser.getIcon();
     case 'eyeDropper':
-      eyeDropper.setConfig = setConfig;
-      return eyeDropper;
+      return eyeDropper.getIcon();
     case 'segment':
-      segment.setShapeState = setShapeState;
-      return segment;
+      return segment.getIcon();
     case 'pencil':
-      pencil.color = config.drawing.color;
-      return pencil;
+      return pencil.getIcon();
     case 'rectangle':
-      rectangle.setShapeState = setShapeState;
-      return rectangle;
+      return rectangle.getIcon();
     case 'text':
-      text.setTextState = setTextState;
-      return text;
+      return text.getIcon();
     default:
       break;
   }
@@ -46,4 +32,66 @@ function makeItem(toolName, {
   return null;
 }
 
-export default makeItem;
+function getCursor(tool, config) {
+  switch (tool) {
+    case 'bucket':
+      return bucket.getCursor();
+    case 'circle':
+      return circle.getCursor();
+    case 'eraser':
+      return eraser.getCursor(config);
+    case 'eyeDropper':
+      return eyeDropper.getCursor();
+    case 'segment':
+      return segment.getCursor();
+    case 'pencil':
+      return pencil.getCursor();
+    case 'rectangle':
+      return rectangle.getCursor();
+    case 'text':
+      return text.getCursor();
+    default:
+      break;
+  }
+
+  return null;
+}
+
+function executeAction(
+  tool, event, { config = { drawing: {} }, setConfig, setShapeState, setTextState },
+) {
+  switch (tool) {
+    case 'bucket':
+      bucket.executeAction(event, config.drawing.color);
+      break;
+    case 'circle':
+      circle.executeAction(event, setShapeState);
+      break;
+    case 'eraser':
+      eraser.executeAction(event, config, setConfig);
+      break;
+    case 'eyeDropper':
+      eyeDropper.executeAction(event, setConfig);
+      break;
+    case 'segment':
+      segment.executeAction(event, setShapeState);
+      break;
+    case 'pencil':
+      pencil.executeAction(event, config.drawing.color);
+      break;
+    case 'rectangle':
+      rectangle.executeAction(event, setShapeState);
+      break;
+    case 'text':
+      text.executeAction(event, setTextState);
+      break;
+    default:
+      break;
+  }
+}
+
+export {
+  getIcon,
+  getCursor,
+  executeAction,
+};

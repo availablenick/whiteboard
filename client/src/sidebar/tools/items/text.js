@@ -1,20 +1,23 @@
-const text = {
-  setTextState: () => {},
-  getIcon() {
-    return ['fas', 'font'];
-  },
-  getCursor() {
-    return 'text';
-  },
-  executeAction(event) {
-    if (event.type === 'click') {
-      this.setTextState({
-        isWriting: true,
-        x: event.clientX,
-        y: event.clientY,
-      });
-    }
-  },
-};
+function getIcon() {
+  return ['fas', 'font'];
+}
 
-export default text;
+function getCursor() {
+  return 'text';
+}
+
+function executeAction(event, setTextState) {
+  if (event.type === 'click') {
+    setTextState({
+      isWriting: true,
+      x: event.clientX,
+      y: event.clientY,
+    });
+  }
+}
+
+export default {
+  getIcon,
+  getCursor,
+  executeAction,
+};

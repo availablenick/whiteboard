@@ -1,42 +1,41 @@
 import createCanvasChangeEvent from '../../../global/helpers';
 import getIconFromCanvas from '../helpers';
 
-const bucket = {
-  color: '',
-  getIcon() {
-    return ['fas', 'fill'];
-  },
-  getCursor() {
-    return getIconFromCanvas('\uf575', 2, 21);
-  },
-  executeAction(event) {
-    const NO_BUTTON = 0;
-    if (event.type === 'mousedown' && event.button === NO_BUTTON) {
-      const canvas = event.target;
-      const context = canvas.getContext('2d');
-      context.fillStyle = this.color;
-      context.strokeStyle = this.color;
+function getIcon() {
+  return ['fas', 'fill'];
+}
 
-      const match = /rgba?\((\d+), ?(\d+), ?(\d+)(, ?(\d+))?\)/.exec(this.color);
-      const red = Number(match[1]);
-      const green = Number(match[2]);
-      const blue = Number(match[3]);
-      const alpha = match[5] ? Number(match[5]) : 1;
-      const drawingColorComponents = [red, green, blue, Math.round(alpha * 255)];
+function getCursor() {
+  return getIconFromCanvas('\uf575', 2, 21);
+}
 
-      const sourceX = event.clientX - canvas.offsetLeft;
-      const sourceY = event.clientY - canvas.offsetTop;
-      const sourcePixelData = context.getImageData(sourceX, sourceY, 1, 1).data;
-      const sourceColorComponents = [
-        sourcePixelData[0], sourcePixelData[1], sourcePixelData[2], sourcePixelData[3],
-      ];
+function executeAction(event, color) {
+  const NO_BUTTON = 0;
+  if (event.type === 'mousedown' && event.button === NO_BUTTON) {
+    const canvas = event.target;
+    const context = canvas.getContext('2d');
+    context.fillStyle = color;
+    context.strokeStyle = color;
 
-      fillMatchingArea(canvas, sourceX, sourceY, sourceColorComponents, drawingColorComponents);
+    const match = /rgba?\((\d+), ?(\d+), ?(\d+)(, ?(\d+))?\)/.exec(color);
+    const red = Number(match[1]);
+    const green = Number(match[2]);
+    const blue = Number(match[3]);
+    const alpha = match[5] ? Number(match[5]) : 1;
+    const drawingColorComponents = [red, green, blue, Math.round(alpha * 255)];
 
-      canvas.dispatchEvent(createCanvasChangeEvent());
-    }
-  },
-};
+    const sourceX = event.clientX - canvas.offsetLeft;
+    const sourceY = event.clientY - canvas.offsetTop;
+    const sourcePixelData = context.getImageData(sourceX, sourceY, 1, 1).data;
+    const sourceColorComponents = [
+      sourcePixelData[0], sourcePixelData[1], sourcePixelData[2], sourcePixelData[3],
+    ];
+
+    fillMatchingArea(canvas, sourceX, sourceY, sourceColorComponents, drawingColorComponents);
+
+    canvas.dispatchEvent(createCanvasChangeEvent());
+  }
+}
 
 function fillMatchingArea(canvas, sourceX, sourceY, sourceColorComponents, drawingColorComponents) {
   const context = canvas.getContext('2d');
@@ -129,4 +128,8 @@ function colorsMatch(color1Components, color2Components) {
           && color1Components[3] === color2Components[3];
 }
 
-export default bucket;
+export default {
+  getIcon,
+  getCursor,
+  executeAction,
+};

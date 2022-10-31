@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SubtoolContainer from './SubtoolContainer';
-import makeItem from './items/toolHandler';
+import { getIcon } from './items/toolHandler';
 import './Group.scss';
 
 function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
@@ -12,7 +12,7 @@ function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
   });
 
   initialState[subtools[0]] = true;
-  const [icon, setIcon] = useState(makeItem(subtools[0], {}).getIcon());
+  const [icon, setIcon] = useState(getIcon(subtools[0]));
   const [state, setState] = useState(initialState);
   const [isContentVisible, setIsContentVisible] = useState(false);
 
@@ -20,7 +20,7 @@ function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
     <li key={tool}>
       <SubtoolContainer
         name={tool}
-        icon={makeItem(tool, {}).getIcon()}
+        icon={getIcon(tool)}
         isSelected={state[tool]}
         isGroupSelected={isSelected}
         setTool={setTool}
