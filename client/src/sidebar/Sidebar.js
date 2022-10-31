@@ -2,7 +2,7 @@ import React, { useState, forwardRef } from 'react';
 import ColorViewer from '../color/ColorViewer';
 import Group from './tools/Group';
 import Misc from './misc/Misc';
-import SingleToolContainer from './tools/ToolContainer';
+import ToolContainer from './tools/ToolContainer';
 import makeTool from './tools/items/toolHandler';
 import makeMiscItem from './misc/items/miscHandler';
 import './Sidebar.scss';
@@ -45,7 +45,7 @@ const Sidebar = forwardRef((props, ref) => {
 
     return (
       <li key={tool}>
-        <SingleToolContainer
+        <ToolContainer
           name={tool}
           icon={makeTool(tool, {}).getIcon()}
           isSelected={state[tool]}
