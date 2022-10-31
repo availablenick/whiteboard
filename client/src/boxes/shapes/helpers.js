@@ -41,10 +41,12 @@ const calculateAngle = (p, q) => {
   return angle;
 };
 
-const distance = (p, q) => Math.sqrt((p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y));
+const calculateDistance = (p, q) => (
+  Math.sqrt((p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y))
+);
 
 export {
   getQuadrant,
   calculateAngle,
-  distance,
+  calculateDistance,
 };

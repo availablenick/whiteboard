@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import createCanvasChangeEvent from '../../global/helpers';
-import { calculateAngle, distance } from './helpers';
+import { calculateAngle, calculateDistance } from './helpers';
 import './Segment.scss';
 
 const stages = {
@@ -91,64 +91,39 @@ function Segment({ config, x, y, setShapeState }) {
     return () => {};
   }, [state]);
 
-  const handleMouseDown = (event) => {
-    event.preventDefault();
+  const handleMouseDown = (mouseDownEvent) => {
+    mouseDownEvent.preventDefault();
     if (isChangingShape(state.stage)) {
       document.onmousemove = (mouseMoveEvent) => {
         mouseMoveEvent.stopPropagation();
-        const q = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
-
-        const canvasRight = canvas.offsetLeft + canvas.offsetWidth;
-        if (q.x < canvas.offsetLeft) {
-          q.x = canvas.offsetLeft;
-        } else if (q.x > canvasRight) {
-          q.x = canvasRight;
-        }
-
-        const canvasBottom = canvas.offsetTop + canvas.offsetHeight;
-        if (q.y < canvas.offsetTop) {
-          q.y = canvas.offsetTop;
-        } else if (q.y > canvasBottom) {
-          q.y = canvasBottom;
-        }
-
-        const width = distance(state.fixedPoint, q);
-        let angle = calculateAngle(state.fixedPoint, q);
+        const p = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
+        clamp(p, canvas.getBoundingClientRect());
+        const width = calculateDistance(state.fixedPoint, p);
+        let angle = calculateAngle(state.fixedPoint, p);
         if (state.fixedSide === 'right') {
           angle = -(180 - angle);
         }
 
-        setStyle((prevStyle) => ({
-          ...prevStyle,
+        setStyle((prev) => ({
+          ...prev,
           transform: `rotate(${angle}deg)`,
           width: `${width}px`,
         }));
       };
     } else {
-      const rect = segmentRef.current.getBoundingClientRect();
-      const shiftX = event.clientX - rect.left;
-      const shiftY = event.clientY - rect.top;
+      const xShift = mouseDownEvent.clientX - segmentRef.current.offsetLeft;
+      const yShift = mouseDownEvent.clientY - segmentRef.current.offsetTop;
       document.onmousemove = (mouseMoveEvent) => {
-        let xPos = mouseMoveEvent.clientX - shiftX;
-        let yPos = mouseMoveEvent.clientY - shiftY;
-        const canvasRight = canvas.offsetLeft + canvas.offsetWidth;
-        if (xPos < canvas.offsetLeft) {
-          xPos = canvas.offsetLeft;
-        } else if (xPos + rect.width > canvasRight) {
-          xPos = canvasRight - rect.width;
-        }
+        const p = {
+          x: mouseMoveEvent.clientX - xShift,
+          y: mouseMoveEvent.clientY - yShift,
+        };
 
-        const canvasBottom = canvas.offsetTop + canvas.offsetHeight;
-        if (yPos < canvas.offsetTop) {
-          yPos = canvas.offsetTop;
-        } else if (yPos + rect.height > canvasBottom) {
-          yPos = canvasBottom - rect.height;
-        }
-
-        setStyle((prevStyle) => ({
-          ...prevStyle,
-          left: `${xPos}px`,
-          top: `${yPos}px`,
+        clamp(p, canvas.getBoundingClientRect());
+        setStyle((prev) => ({
+          ...prev,
+          left: `${p.x}px`,
+          top: `${p.y}px`,
         }));
       };
     }
@@ -166,81 +141,15 @@ function Segment({ config, x, y, setShapeState }) {
   };
 
   const positions = ['left', 'right'];
-  const points = positions.map((position) => {
-    const resMouseDown = (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const pointRect = event.target.getBoundingClientRect();
-      const segRect = segmentRef.current.getBoundingClientRect();
-      if (position === 'left') {
-        let xCoord = null;
-        if (Math.abs(pointRect.left - segRect.left) < Math.abs(pointRect.right - segRect.right)) {
-          xCoord = segRect.right;
-        } else {
-          xCoord = segRect.left;
-        }
-
-        let yCoord = null;
-        if (Math.abs(pointRect.top - segRect.top) < Math.abs(pointRect.bottom - segRect.bottom)) {
-          yCoord = segRect.bottom;
-        } else {
-          yCoord = segRect.top;
-        }
-
-        setStyle({
-          ...style,
-          bottom: `${window.innerHeight - yCoord}px`,
-          left: '',
-          right: `${window.innerWidth - xCoord}px`,
-          top: '',
-          transformOrigin: 'right center',
-        });
-
-        setState({
-          stage: stages.RESHAPING,
-          fixedPoint: { x: xCoord, y: yCoord },
-          fixedSide: 'right',
-        });
-      } else {
-        let xCoord = null;
-        if (Math.abs(pointRect.x - segRect.left) < Math.abs(pointRect.x - segRect.right)) {
-          xCoord = segRect.right;
-        } else {
-          xCoord = segRect.left;
-        }
-
-        let yCoord = null;
-        if (Math.abs(pointRect.y - segRect.top) < Math.abs(pointRect.y - segRect.bottom)) {
-          yCoord = segRect.bottom;
-        } else {
-          yCoord = segRect.top;
-        }
-
-        setStyle({
-          ...style,
-          bottom: '',
-          left: `${xCoord}px`,
-          right: '',
-          top: `${yCoord}px`,
-          transformOrigin: 'left center',
-        });
-
-        setState({
-          stage: stages.RESHAPING,
-          fixedPoint: { x: xCoord, y: yCoord },
-          fixedSide: 'left',
-        });
-      }
-    };
-
-    return (
-      <div
-        key={position}
-        className={`res ${position}`}
-        onMouseDown={resMouseDown}
-      />
-    );
-  });
+  const resizers = positions.map((position) => (
+    <Resizer
+      key={position}
+      position={position}
+      segmentRect={segmentRef.current ? segmentRef.current.getBoundingClientRect() : {}}
+      setStyle={setStyle}
+      setState={setState}
+    />
+  ));
 
   return (
     <div
@@ -249,13 +158,93 @@ function Segment({ config, x, y, setShapeState }) {
       ref={segmentRef}
       onMouseDown={handleMouseDown}
     >
-      {(state.stage === stages.POSITIONING || state.stage === stages.RESHAPING) && points}
+      {(state.stage === stages.POSITIONING || state.stage === stages.RESHAPING) && resizers}
     </div>
   );
 }
 
 function isChangingShape(stage) {
   return stage === stages.SHAPING || stage === stages.RESHAPING;
+}
+
+function clamp(p, bounds) {
+  if (p.x < bounds.left) {
+    p.x = bounds.left;
+  } else if (p.x > bounds.right) {
+    p.x = bounds.right;
+  }
+
+  if (p.y < bounds.top) {
+    p.y = bounds.top;
+  } else if (p.y > bounds.bottom) {
+    p.y = bounds.bottom;
+  }
+}
+
+function Resizer({ position, segmentRect, setStyle, setState }) {
+  const resize = (mouseDownEvent) => {
+    mouseDownEvent.preventDefault();
+    const resizerRect = mouseDownEvent.target.getBoundingClientRect();
+    let fixedPointX = -1;
+    if (isAtLeftEnd(resizerRect, segmentRect)) {
+      fixedPointX = segmentRect.right;
+    } else {
+      fixedPointX = segmentRect.left;
+    }
+
+    let fixedPointY = -1;
+    if (isAtTopEnd(resizerRect, segmentRect)) {
+      fixedPointY = segmentRect.bottom;
+    } else {
+      fixedPointY = segmentRect.top;
+    }
+
+    if (position === 'left') {
+      setStyle((prev) => ({
+        ...prev,
+        bottom: `${window.innerHeight - fixedPointY}px`,
+        left: '',
+        right: `${window.innerWidth - fixedPointX}px`,
+        top: '',
+        transformOrigin: 'right center',
+      }));
+
+      setState({
+        stage: stages.RESHAPING,
+        fixedPoint: { x: fixedPointX, y: fixedPointY },
+        fixedSide: 'right',
+      });
+    } else {
+      setStyle((prev) => ({
+        ...prev,
+        bottom: '',
+        left: `${fixedPointX}px`,
+        right: '',
+        top: `${fixedPointY}px`,
+        transformOrigin: 'left center',
+      }));
+
+      setState({
+        stage: stages.RESHAPING,
+        fixedPoint: { x: fixedPointX, y: fixedPointY },
+        fixedSide: 'left',
+      });
+    }
+  };
+
+  return <div className={`res ${position}`} onMouseDown={resize} />;
+}
+
+function isAtLeftEnd(resizerRect, segmentRect) {
+  return (
+    Math.abs(resizerRect.left - segmentRect.left) < Math.abs(resizerRect.right - segmentRect.right)
+  );
+}
+
+function isAtTopEnd(resizerRect, segmentRect) {
+  return (
+    Math.abs(resizerRect.top - segmentRect.top) < Math.abs(resizerRect.bottom - segmentRect.bottom)
+  );
 }
 
 export default Segment;
