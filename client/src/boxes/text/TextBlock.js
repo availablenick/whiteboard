@@ -6,10 +6,6 @@ import getElementMeasurements from '../helpers';
 import './TextBlock.scss';
 
 let rowHeight = 0;
-const removal = {
-  shouldRemove: true,
-  target: null,
-};
 
 function TextBlock({ config, x, y, setTextState }) {
   const canvas = document.getElementById('canvas');
@@ -44,16 +40,7 @@ function TextBlock({ config, x, y, setTextState }) {
       context.strokeStyle = config.drawing.color;
       drawText(canvas, textarea, rowHeight);
       canvas.dispatchEvent(createCanvasChangeEvent());
-      if (removal.shouldRemove) {
-        setTextState({
-          isWriting: false,
-          x: -1,
-          y: -1,
-        });
-      } else {
-        const newEvent = new MouseEvent('mouseup');
-        removal.target.dispatchEvent(newEvent);
-      }
+      setTextState({ isWriting: false, x: -1, y: -1 });
     }
 
     document.addEventListener('click', handleDocumentClick);
@@ -66,20 +53,11 @@ function TextBlock({ config, x, y, setTextState }) {
     };
   }, []);
 
-  const handleClick = (event) => {
-    if (event.target !== removal.target && removal.target !== null) {
-      const newEvent = new MouseEvent('mouseup');
-      removal.target.dispatchEvent(newEvent);
-    }
-  };
-
   const handleMouseDown = (event) => {
     event.preventDefault();
     event.persist();
     const shiftX = event.clientX - textRef.current.offsetLeft;
     const shiftY = event.clientY - textRef.current.offsetTop;
-    removal.shouldRemove = false;
-    removal.target = textRef.current;
 
     document.onmousemove = (mouseMoveEvent) => {
       let xPos = mouseMoveEvent.clientX - shiftX;
@@ -108,8 +86,6 @@ function TextBlock({ config, x, y, setTextState }) {
     document.onmouseup = () => {
       document.onmousemove = null;
       document.onmouseup = null;
-      removal.shouldRemove = true;
-      removal.target = null;
     };
   };
 
@@ -191,7 +167,6 @@ function TextBlock({ config, x, y, setTextState }) {
       style={style}
       ref={textRef}
       onMouseDown={handleMouseDown}
-      onClick={handleClick}
     >
       {isPositioned && resizers}
       <textarea
