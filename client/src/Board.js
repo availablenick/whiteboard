@@ -156,13 +156,13 @@ function setUpSocketListeners(socket, canvas, { setId, setConnectedUsers }) {
   });
 }
 
-const drawURLImageOnCanvas = (canvas, dataURL) => {
+function drawURLImageOnCanvas(canvas, dataURL) {
   const img = document.createElement('img');
   img.src = dataURL;
   img.addEventListener('load', () => {
     canvas.getContext('2d').drawImage(img, 0, 0);
   });
-};
+}
 
 function generateRGB() {
   const MAX = 255;
