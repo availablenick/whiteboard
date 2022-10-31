@@ -3,6 +3,12 @@ import createCanvasChangeEvent from '../../global/helpers';
 import { calculateAngle, distance } from './helpers';
 import './Segment.scss';
 
+const stages = {
+  POSITIONING: 0,
+  RESHAPING: 1,
+  SHAPING: 2,
+};
+
 function Segment({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
   const segmentRef = useRef(null);
@@ -13,7 +19,7 @@ function Segment({ config, x, y, setShapeState }) {
 
   const [style, setStyle] = useState(initialStyle);
   const [state, setState] = useState({
-    stage: 'shaping',
+    stage: stages.SHAPING,
     fixedPoint: { x, y },
     fixedSide: 'left',
   });
@@ -57,7 +63,7 @@ function Segment({ config, x, y, setShapeState }) {
   }, []);
 
   useEffect(() => {
-    if (/shaping/.test(state.stage)) {
+    if (isChangingShape(state.stage)) {
       const newEvent = new MouseEvent('mousedown', { bubbles: true });
       segmentRef.current.dispatchEvent(newEvent);
     } else {
@@ -87,7 +93,7 @@ function Segment({ config, x, y, setShapeState }) {
 
   const handleMouseDown = (event) => {
     event.preventDefault();
-    if (/shaping/.test(state.stage)) {
+    if (isChangingShape(state.stage)) {
       document.onmousemove = (mouseMoveEvent) => {
         mouseMoveEvent.stopPropagation();
         const q = { x: mouseMoveEvent.clientX, y: mouseMoveEvent.clientY };
@@ -150,10 +156,10 @@ function Segment({ config, x, y, setShapeState }) {
     document.onmouseup = () => {
       document.onmousemove = null;
       document.onmouseup = null;
-      if (/shaping/.test(state.stage)) {
+      if (isChangingShape(state.stage)) {
         setState({
           ...state,
-          stage: 'positioning',
+          stage: stages.POSITIONING,
         });
       }
     };
@@ -191,7 +197,7 @@ function Segment({ config, x, y, setShapeState }) {
         });
 
         setState({
-          stage: 'reshaping',
+          stage: stages.RESHAPING,
           fixedPoint: { x: xCoord, y: yCoord },
           fixedSide: 'right',
         });
@@ -220,7 +226,7 @@ function Segment({ config, x, y, setShapeState }) {
         });
 
         setState({
-          stage: 'reshaping',
+          stage: stages.RESHAPING,
           fixedPoint: { x: xCoord, y: yCoord },
           fixedSide: 'left',
         });
@@ -243,9 +249,13 @@ function Segment({ config, x, y, setShapeState }) {
       ref={segmentRef}
       onMouseDown={handleMouseDown}
     >
-      {(state.stage === 'positioning' || state.stage === 'reshaping') && points}
+      {(state.stage === stages.POSITIONING || state.stage === stages.RESHAPING) && points}
     </div>
   );
+}
+
+function isChangingShape(stage) {
+  return stage === stages.SHAPING || stage === stages.RESHAPING;
 }
 
 export default Segment;

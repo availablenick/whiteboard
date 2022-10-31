@@ -6,6 +6,11 @@ import getElementMeasurements from '../helpers';
 import resize from '../resizing/handler';
 import './Circle.scss';
 
+const stages = {
+  CREATING: 0,
+  POSITIONING: 1,
+};
+
 function Circle({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
   const circleRef = useRef(null);
@@ -15,7 +20,7 @@ function Circle({ config, x, y, setShapeState }) {
   };
 
   const [style, setStyle] = useState(initialStyle);
-  const [stage, setStage] = useState('shaping');
+  const [stage, setStage] = useState(stages.CREATING);
   useEffect(() => {
     const newStyle = {
       border: `4px solid ${config.drawing.color}`,
@@ -55,7 +60,7 @@ function Circle({ config, x, y, setShapeState }) {
   }, []);
 
   useEffect(() => {
-    if (/shaping/.test(stage)) {
+    if (stage === stages.CREATING) {
       const newEvent = new MouseEvent('mousedown', { bubbles: true });
       circleRef.current.dispatchEvent(newEvent);
     } else {
@@ -82,7 +87,7 @@ function Circle({ config, x, y, setShapeState }) {
   const handleMouseDown = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    if (/shaping/.test(stage)) {
+    if (stage === stages.CREATING) {
       event.persist();
       const p = { x, y };
       const corners = {
@@ -134,8 +139,8 @@ function Circle({ config, x, y, setShapeState }) {
     document.onmouseup = () => {
       document.onmousemove = null;
       document.onmouseup = null;
-      if (/shaping/.test(stage)) {
-        setStage('positioning');
+      if (stage === stages.CREATING) {
+        setStage(stages.POSITIONING);
       }
     };
   };
@@ -169,7 +174,7 @@ function Circle({ config, x, y, setShapeState }) {
       ref={circleRef}
       onMouseDown={handleMouseDown}
     >
-      {stage === 'positioning' && resizers}
+      {stage === stages.POSITIONING && resizers}
     </div>
   );
 }

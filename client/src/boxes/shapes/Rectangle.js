@@ -6,6 +6,11 @@ import getElementMeasurements from '../helpers';
 import resize from '../resizing/handler';
 import './Rectangle.scss';
 
+const stages = {
+  CREATING: 0,
+  POSITIONING: 1,
+};
+
 function Rectangle({ config, x, y, setShapeState }) {
   const canvas = document.getElementById('canvas');
   const rectangleRef = useRef(null);
@@ -15,7 +20,7 @@ function Rectangle({ config, x, y, setShapeState }) {
   };
 
   const [style, setStyle] = useState(initialStyle);
-  const [stage, setStage] = useState('shaping');
+  const [stage, setStage] = useState(stages.CREATING);
   useEffect(() => {
     const newStyle = {
       border: `4px solid ${config.drawing.color}`,
@@ -48,7 +53,7 @@ function Rectangle({ config, x, y, setShapeState }) {
   }, []);
 
   useEffect(() => {
-    if (/shaping/.test(stage)) {
+    if (stage === stages.CREATING) {
       const newEvent = new MouseEvent('mousedown', { bubbles: true });
       rectangleRef.current.dispatchEvent(newEvent);
     } else {
@@ -75,7 +80,7 @@ function Rectangle({ config, x, y, setShapeState }) {
   const handleMouseDown = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    if (/shaping/.test(stage)) {
+    if (stage === stages.CREATING) {
       event.persist();
       const p = { x, y };
       const corners = {
@@ -127,8 +132,8 @@ function Rectangle({ config, x, y, setShapeState }) {
     document.onmouseup = () => {
       document.onmousemove = null;
       document.onmouseup = null;
-      if (/shaping/.test(stage)) {
-        setStage('positioning');
+      if (stage === stages.CREATING) {
+        setStage(stages.POSITIONING);
       }
     };
   };
@@ -157,7 +162,7 @@ function Rectangle({ config, x, y, setShapeState }) {
 
   return (
     <div className="rect-shape" style={style} ref={rectangleRef} onMouseDown={handleMouseDown}>
-      {stage === 'positioning' && resizers}
+      {stage === stages.POSITIONING && resizers}
     </div>
   );
 }
