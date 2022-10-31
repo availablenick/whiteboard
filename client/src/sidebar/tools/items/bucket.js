@@ -1,12 +1,17 @@
 import createCanvasChangeEvent from '../../../global/helpers';
-import getIconFromCanvas from '../helpers';
+import createIcon from './helpers';
 
 function getIcon() {
-  return ['fas', 'fill'];
+  return ['fas', 'fill-drip'];
 }
 
 function getCursor() {
-  return getIconFromCanvas('\uf575', 2, 21);
+  return createIcon('\uf575', 2, 12, (context) => {
+    context.scale(-1, 1);
+    context.fillStyle = '#000';
+    context.shadowBlur = '3';
+    context.shadowColor = '#fff';
+  });
 }
 
 function executeAction(event, color) {

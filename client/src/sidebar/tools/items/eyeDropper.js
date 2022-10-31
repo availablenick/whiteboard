@@ -1,11 +1,15 @@
-import getIconFromCanvas from '../helpers';
+import createIcon from './helpers';
 
 function getIcon() {
   return ['fas', 'eye-dropper'];
 }
 
 function getCursor() {
-  return getIconFromCanvas('\uf1fb', 2, 21);
+  return createIcon('\uf1fb', 2, 22, (context) => {
+    context.fillStyle = '#000';
+    context.shadowBlur = '3';
+    context.shadowColor = '#fff';
+  });
 }
 
 function executeAction(event, setConfig) {

@@ -1,12 +1,16 @@
 import createCanvasChangeEvent from '../../../global/helpers';
-import getIconFromCanvas from '../helpers';
+import createIcon from './helpers';
 
 function getIcon() {
   return ['fas', 'pencil-alt'];
 }
 
 function getCursor() {
-  return getIconFromCanvas('\uf303', 2, 21);
+  return createIcon('\uf303', 2, 22, (context) => {
+    context.fillStyle = '#000';
+    context.shadowBlur = '3';
+    context.shadowColor = '#fff';
+  });
 }
 
 function executeAction(event, color) {
