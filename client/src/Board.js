@@ -123,6 +123,8 @@ function Board({ config, setConfig, tool, width, height }) {
 function setUpSocketListeners(socket, canvas, { setId, setConnectedUsers }) {
   socket.on('connect', () => {
     setId(socket.id);
+    const color = generateRGB();
+    socket.emit('new-client', `rgb(${color.r}, ${color.g}, ${color.b})`);
   });
 
   socket.on('canvas-change', (data) => {
@@ -135,7 +137,7 @@ function setUpSocketListeners(socket, canvas, { setId, setConnectedUsers }) {
       users[userId] = {
         x: data[userId].x,
         y: data[userId].y,
-        color: generateRGB(),
+        color: data[userId].color,
       };
     });
 
@@ -148,7 +150,7 @@ function setUpSocketListeners(socket, canvas, { setId, setConnectedUsers }) {
       [data.id]: {
         x: data.x,
         y: data.y,
-        color: prev[data.id].color,
+        color: prev[data.id] ? prev[data.id].color : '',
       },
     }));
   });
@@ -182,7 +184,7 @@ function makeUserPointers(users, excludedId) {
           userId={userId}
           x={user.x}
           y={user.y}
-          color={`rgb(${user.color.r}, ${user.color.g}, ${user.color.b})`}
+          color={user.color}
         />
       );
     });
