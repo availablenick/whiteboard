@@ -44,10 +44,10 @@ function Board({ config, setConfig, tool, width, height }) {
       }
 
       if (canvas) {
-        canvas.removeEventListener(canvasChangeListener);
+        canvas.removeEventListener('canvas-change', canvasChangeListener);
       }
 
-      document.removeEventListener(mouseMoveListener);
+      document.removeEventListener('mousemove', mouseMoveListener);
     };
   }, []);
 
