@@ -56,7 +56,7 @@ const Sidebar = forwardRef((props, ref) => {
     );
   });
 
-  const miscItems = ['clearer', 'hider'];
+  const miscItems = ['clearer', 'filesaver', 'hider'];
   const miscList = miscItems.map((item) => (
     <li key={item}>
       <Misc

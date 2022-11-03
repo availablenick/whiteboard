@@ -1,5 +1,6 @@
 import clearer from './clearer';
 import hider from './hider';
+import filesaver from './filesaver';
 
 function getIcon(item) {
   switch (item) {
@@ -7,6 +8,8 @@ function getIcon(item) {
       return clearer.getIcon();
     case 'hider':
       return hider.getIcon();
+    case 'filesaver':
+      return filesaver.getIcon();
     default:
       break;
   }
@@ -21,6 +24,9 @@ function executeAction(item, event, { setIsSidebarVisible }) {
       break;
     case 'hider':
       hider.executeAction(event, setIsSidebarVisible);
+      break;
+    case 'filesaver':
+      filesaver.executeAction();
       break;
     default:
       break;
