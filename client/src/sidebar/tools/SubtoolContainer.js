@@ -26,7 +26,7 @@ function SubtoolContainer({
     }
   };
 
-  return <Tool icon={icon} isSelected={isSelected} handleClick={handleClick} />;
+  return <Tool name={name} icon={icon} isSelected={isSelected} handleClick={handleClick} />;
 }
 
 export default SubtoolContainer;

@@ -13,7 +13,7 @@ const Sidebar = forwardRef((props, ref) => {
     eraser: null,
     bucket: null,
     text: null,
-    shapes: [
+    shape: [
       'segment',
       'rectangle',
       'circle',
@@ -56,14 +56,24 @@ const Sidebar = forwardRef((props, ref) => {
     );
   });
 
-  const miscItems = ['clearer', 'filesaver', 'hider'];
-  const miscList = miscItems.map((item) => (
+  const miscItems = {
+    clearer: {
+      tooltip: 'Clear',
+    },
+    filesaver: {
+      tooltip: 'Save',
+    },
+    hider: {
+      tooltip: null,
+    },
+  };
+
+  const miscList = Object.keys(miscItems).map((item) => (
     <li key={item}>
       <Misc
         name={item}
         icon={getMiscIcon(item)}
-        config={props.config}
-        setConfig={props.setConfig}
+        tooltip={miscItems[item].tooltip}
         setIsSidebarVisible={props.setIsSidebarVisible}
       />
     </li>

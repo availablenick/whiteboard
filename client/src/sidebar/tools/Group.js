@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SubtoolContainer from './SubtoolContainer';
+import Tooltip from '../Tooltip';
 import { getIcon } from './items/toolHandler';
 import './Group.scss';
 
@@ -71,11 +72,12 @@ function Group({ name, subtools, setTool, isSelected, setSidebarState }) {
   return (
     <div className="tool-group w-100" ref={groupRef} onClick={handleClick}>
       <span
-        className="d-inline-block w-100"
+        className="d-inline-block w-100 position-relative"
         style={isSelected ? { background: '#fff', color: '#000' } : {}}
       >
         <FontAwesomeIcon icon={icon} />
         <Toggler isGroupSelected={isSelected} setIsContentVisible={setIsContentVisible} />
+        {!isContentVisible && <Tooltip text={name} />}
       </span>
 
       {isContentVisible && <ul>{toolGroup}</ul>}

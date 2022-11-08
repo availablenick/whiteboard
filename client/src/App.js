@@ -12,7 +12,7 @@ function App() {
     eraser: { size: 16 },
     bucket: null,
     text: null,
-    shapes: {
+    shape: {
       segment: null,
       rectangle: null,
       circle: null,

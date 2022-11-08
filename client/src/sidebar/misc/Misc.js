@@ -1,9 +1,10 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Tooltip from '../Tooltip';
 import { executeAction } from './items/miscHandler';
 import './Misc.scss';
 
-function Misc({ name, icon, setIsSidebarVisible }) {
+function Misc({ name, icon, tooltip, setIsSidebarVisible }) {
   const params = { setIsSidebarVisible };
 
   const handleClick = (event) => {
@@ -16,6 +17,7 @@ function Misc({ name, icon, setIsSidebarVisible }) {
       onClick={handleClick}
     >
       <FontAwesomeIcon icon={icon} />
+      {tooltip && <Tooltip text={tooltip} />}
     </span>
   );
 }

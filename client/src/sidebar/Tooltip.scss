@@ -1,0 +1,23 @@
+.tooltip-container {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+
+  &:hover > .custom-tooltip {
+    display: inline-block;
+  }
+
+  > .custom-tooltip {
+    background: #000;
+    color: #fff;
+    display: none;
+    font-size: 0.7rem;
+    left: calc(100% + 0.25rem);
+    padding: 0.1rem 1.35rem;
+    position: absolute;
+  }
+}
