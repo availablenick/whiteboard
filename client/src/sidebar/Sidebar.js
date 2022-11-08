@@ -18,7 +18,7 @@ const Sidebar = forwardRef((props, ref) => {
       'rectangle',
       'circle',
     ],
-    eyeDropper: null,
+    eyedropper: null,
   };
 
   const initialState = {};

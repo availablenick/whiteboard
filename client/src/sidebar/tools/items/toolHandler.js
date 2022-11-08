@@ -1,7 +1,7 @@
 import bucket from './bucket';
 import circle from './circle';
 import eraser from './eraser';
-import eyeDropper from './eyeDropper';
+import eyedropper from './eyedropper';
 import segment from './segment';
 import pencil from './pencil';
 import rectangle from './rectangle';
@@ -15,8 +15,8 @@ function getIcon(tool) {
       return circle.getIcon();
     case 'eraser':
       return eraser.getIcon();
-    case 'eyeDropper':
-      return eyeDropper.getIcon();
+    case 'eyedropper':
+      return eyedropper.getIcon();
     case 'segment':
       return segment.getIcon();
     case 'pencil':
@@ -40,8 +40,8 @@ function getCursor(tool, config) {
       return circle.getCursor();
     case 'eraser':
       return eraser.getCursor(config);
-    case 'eyeDropper':
-      return eyeDropper.getCursor();
+    case 'eyedropper':
+      return eyedropper.getCursor();
     case 'segment':
       return segment.getCursor();
     case 'pencil':
@@ -70,8 +70,8 @@ function executeAction(
     case 'eraser':
       eraser.executeAction(event, config, setConfig);
       break;
-    case 'eyeDropper':
-      eyeDropper.executeAction(event, setConfig);
+    case 'eyedropper':
+      eyedropper.executeAction(event, setConfig);
       break;
     case 'segment':
       segment.executeAction(event, setShapeState);

@@ -17,7 +17,7 @@ function App() {
       rectangle: null,
       circle: null,
     },
-    eyeDropper: null,
+    eyedropper: null,
     drawing: { color: 'rgba(0, 0, 0, 1)' },
     erasing: { color: 'rgba(255, 255, 255, 1)' },
   };
