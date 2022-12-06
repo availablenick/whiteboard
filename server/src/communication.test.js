@@ -29,7 +29,7 @@ describe('client communication', () => {
     });
   });
 
-  test('user receives an ID and a user list after connecting to a room', (done) => {
+  test('user receives ID, color, and user list after connecting to a room', (done) => {
     const port = httpServer.address().port;
     const socket1 = Client(`http://localhost:${port}/room`);
     const socket2 = Client(`http://localhost:${port}/room`);
@@ -37,11 +37,12 @@ describe('client communication', () => {
 
     socket1.once('connect', () => {
       socket2.once('connect', () => {
-        socket1.emit('user-joined', 'black', (id1) => {
-          socket2.emit('user-joined', 'white', (id2, users) => {
+        socket1.emit('user-joined', (id1, color1) => {
+          socket2.emit('user-joined', (id2, color2, users) => {
             expect(typeof id2).toBe('string');
-            expect(users).toContainEqual({ id: id1, x: 0, y: 0, color: 'black' });
-            expect(users).not.toContainEqual({ id: id2, x: 0, y: 0, color: 'white' });
+            expect(typeof color2).toBe('string');
+            expect(users).toContainEqual({ id: id1, x: 0, y: 0, color: color1 });
+            expect(users).not.toContainEqual({ id: id2, x: 0, y: 0, color: color2 });
             done();
           });
         });
@@ -57,13 +58,13 @@ describe('client communication', () => {
 
     socket1.once('connect', () => {
       socket2.once('connect', () => {
-        let userId = '';
+        let userData = {};
         socket1.once('user-joined', (user) => {
-          expect(user).toMatchObject({ id: userId, x: 0, y: 0, color: 'black' });
+          expect(user).toMatchObject({ id: userData.id, x: 0, y: 0, color: userData.color });
           done();
         });
 
-        socket2.emit('user-joined', 'black', (id) => { userId = id; });
+        socket2.emit('user-joined', (id, color) => { userData = { id, color }; });
       });
     });
   });
@@ -82,7 +83,7 @@ describe('client communication', () => {
           done(new Error('user should not be notified'));
         });
 
-        socket1.emit('user-joined', 'black', () => {});
+        socket1.emit('user-joined', () => {});
       });
     });
   });
@@ -95,7 +96,7 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('user-joined', 'black', () => {});
+      socket1.emit('user-joined', () => {});
     });
 
     socket2.once('connect', () => {
@@ -123,7 +124,7 @@ describe('client communication', () => {
           socket1.disconnect();
         });
 
-        socket1.emit('user-joined', 'black', () => {});
+        socket1.emit('user-joined', () => {});
       });
     });
   });
@@ -136,7 +137,7 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('user-joined', 'black', () => {});
+      socket1.emit('user-joined', () => {});
     });
 
     socket2.once('connect', () => {
@@ -156,7 +157,7 @@ describe('client communication', () => {
     sockets.push(socket1, socket2);
 
     socket1.once('connect', () => {
-      socket1.emit('user-joined', 'black', () => {});
+      socket1.emit('user-joined', () => {});
     });
 
     socket2.once('connect', () => {
@@ -178,7 +179,7 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('user-joined', 'black', () => {});
+      socket1.emit('user-joined', () => {});
     });
 
     socket2.once('connect', () => {
@@ -200,19 +201,19 @@ describe('client communication', () => {
     sockets.push(socket1, socket2);
 
     socket1.once('connect', () => {
-      socket2.once('connect', () => {
-        socket2.once('user-joined', (user) => {
-          socket2.once('position-change', (id, position) => {
-            expect(id).toBe(user.id);
-            expect(position).toMatchObject({ x: 5, y: 5 });
-            done();
-          });
-        });
+      socket1.emit('user-joined', () => {});
+    });
 
-        socket1.emit('user-joined', 'black', (id) => {
-          socket1.emit('position-change', id, { x: 5, y: 5 });
+    socket2.once('connect', () => {
+      socket2.once('user-joined', (user) => {
+        socket2.once('position-change', (id, position) => {
+          expect(id).toBe(user.id);
+          expect(position).toMatchObject({ x: 5, y: 5 });
+          done();
         });
       });
+
+      socket1.emit('position-change', { x: 5, y: 5 });
     });
   });
 
@@ -224,7 +225,7 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('user-joined', 'black', () => {});
+      socket1.emit('user-joined', () => {});
     });
 
     socket2.once('connect', () => {

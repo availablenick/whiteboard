@@ -120,8 +120,7 @@ function Board({ config, setConfig, tool, width, height }) {
 
 function setUpSocketListeners(socket, canvas, { setConnectedUsers }) {
   socket.on('connect', () => {
-    const color = generateRGB();
-    socket.emit('user-joined', `rgb(${color.r}, ${color.g}, ${color.b})`, (_, users) => {
+    socket.emit('user-joined', (_1, _2, users) => {
       const connectedUsers = {};
       users.forEach((user) => {
         connectedUsers[user.id] = user;
@@ -168,15 +167,6 @@ function drawURLImageOnCanvas(canvas, dataURL) {
   img.addEventListener('load', () => {
     canvas.getContext('2d').drawImage(img, 0, 0);
   });
-}
-
-function generateRGB() {
-  const MAX = 255;
-  return {
-    r: Math.floor(Math.random() * MAX),
-    g: Math.floor(Math.random() * MAX),
-    b: Math.floor(Math.random() * MAX),
-  };
 }
 
 function makeUserPointers(users) {
