@@ -11,7 +11,6 @@ function Board({ config, setConfig, tool, width, height }) {
   const [cursor, setCursor] = useState('');
   const [textState, setTextState] = useState({ isWriting: false });
   const [shapeState, setShapeState] = useState({ isShaping: false });
-  const [id, setId] = useState('');
   const [connectedUsers, setConnectedUsers] = useState({});
 
   useEffect(() => {
@@ -20,8 +19,7 @@ function Board({ config, setConfig, tool, width, height }) {
     };
 
     const mouseMoveListener = (event) => {
-      const data = { x: event.clientX, y: event.clientY };
-      socket.emit('client-position-change', data);
+      socket.emit('position-change', { x: event.clientX, y: event.clientY });
     };
 
     let socket = null;
@@ -33,7 +31,7 @@ function Board({ config, setConfig, tool, width, height }) {
         reconnectionDelayMax: 10000,
       });
 
-      setUpSocketListeners(socket, canvasRef.current, { setId, setConnectedUsers });
+      setUpSocketListeners(socket, canvasRef.current, { setConnectedUsers });
       canvasRef.current.addEventListener('canvas-change', canvasChangeListener);
       document.addEventListener('mousemove', mouseMoveListener);
     }
@@ -94,7 +92,7 @@ function Board({ config, setConfig, tool, width, height }) {
         No support for canvas.
       </canvas>
 
-      {makeUserPointers(connectedUsers, id)}
+      {makeUserPointers(connectedUsers)}
 
       {shapeState.isShaping
         && (
@@ -120,37 +118,45 @@ function Board({ config, setConfig, tool, width, height }) {
   );
 }
 
-function setUpSocketListeners(socket, canvas, { setId, setConnectedUsers }) {
+function setUpSocketListeners(socket, canvas, { setConnectedUsers }) {
   socket.on('connect', () => {
-    setId(socket.id);
     const color = generateRGB();
-    socket.emit('new-client', `rgb(${color.r}, ${color.g}, ${color.b})`);
+    socket.emit('user-joined', `rgb(${color.r}, ${color.g}, ${color.b})`, (_, users) => {
+      const connectedUsers = {};
+      users.forEach((user) => {
+        connectedUsers[user.id] = user;
+      });
+
+      setConnectedUsers(connectedUsers);
+    });
   });
 
   socket.on('canvas-change', (data) => {
     drawURLImageOnCanvas(canvas, data);
   });
 
-  socket.on('client-connection-change', (data) => {
-    const users = {};
-    Object.keys(data).forEach((userId) => {
-      users[userId] = {
-        x: data[userId].x,
-        y: data[userId].y,
-        color: data[userId].color,
-      };
+  socket.on('user-joined', (user) => {
+    setConnectedUsers((prev) => {
+      const next = { ...prev, [user.id]: user };
+      return next;
     });
-
-    setConnectedUsers(users);
   });
 
-  socket.on('client-position-change', (data) => {
+  socket.on('user-left', (id) => {
+    setConnectedUsers((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  });
+
+  socket.on('position-change', (id, position) => {
     setConnectedUsers((prev) => ({
       ...prev,
-      [data.id]: {
-        x: data.x,
-        y: data.y,
-        color: prev[data.id] ? prev[data.id].color : '',
+      [id]: {
+        x: position.x,
+        y: position.y,
+        color: prev[id] ? prev[id].color : '',
       },
     }));
   });
@@ -173,20 +179,11 @@ function generateRGB() {
   };
 }
 
-function makeUserPointers(users, excludedId) {
+function makeUserPointers(users) {
   return Object.keys(users)
-    .filter((userId) => userId !== excludedId)
-    .map((userId) => {
-      const user = users[userId];
-      return (
-        <Pointer
-          key={userId}
-          userId={userId}
-          x={user.x}
-          y={user.y}
-          color={user.color}
-        />
-      );
+    .map((id) => {
+      const user = users[id];
+      return <Pointer key={id} userId={id} x={user.x} y={user.y} color={user.color} />;
     });
 }
 

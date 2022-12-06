@@ -29,6 +29,26 @@ describe('client communication', () => {
     });
   });
 
+  test('user receives an ID and a user list after connecting to a room', (done) => {
+    const port = httpServer.address().port;
+    const socket1 = Client(`http://localhost:${port}/room`);
+    const socket2 = Client(`http://localhost:${port}/room`);
+    sockets.push(socket1, socket2);
+
+    socket1.once('connect', () => {
+      socket2.once('connect', () => {
+        socket1.emit('user-joined', 'black', (id1) => {
+          socket2.emit('user-joined', 'white', (id2, users) => {
+            expect(typeof id2).toBe('string');
+            expect(users).toContainEqual({ id: id1, x: 0, y: 0, color: 'black' });
+            expect(users).not.toContainEqual({ id: id2, x: 0, y: 0, color: 'white' });
+            done();
+          });
+        });
+      });
+    });
+  });
+
   test('users in a room are notified when another user connects to that room', (done) => {
     const port = httpServer.address().port;
     const socket1 = Client(`http://localhost:${port}/room`);
@@ -36,13 +56,33 @@ describe('client communication', () => {
     sockets.push(socket1, socket2);
 
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
-    });
+      socket2.once('connect', () => {
+        let userId = '';
+        socket1.once('user-joined', (user) => {
+          expect(user).toMatchObject({ id: userId, x: 0, y: 0, color: 'black' });
+          done();
+        });
 
-    socket2.once('connect', () => {
-      socket2.once('client-connection-change', (data) => {
-        expect(data).toHaveProperty(socket1.id, { x: 0, y: 0, color: 'black' });
-        done();
+        socket2.emit('user-joined', 'black', (id) => { userId = id; });
+      });
+    });
+  });
+
+  test('user is not notified of its own connection to a room', (done) => {
+    const port = httpServer.address().port;
+    const socket1 = Client(`http://localhost:${port}/room`);
+    const socket2 = Client(`http://localhost:${port}/room`);
+    sockets.push(socket1, socket2);
+    const timeoutId = setTimeout(() => { done(); }, 3000);
+
+    socket1.once('connect', () => {
+      socket2.once('connect', () => {
+        socket1.once('user-joined', () => {
+          clearTimeout(timeoutId);
+          done(new Error('user should not be notified'));
+        });
+
+        socket1.emit('user-joined', 'black', () => {});
       });
     });
   });
@@ -55,11 +95,11 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
+      socket1.emit('user-joined', 'black', () => {});
     });
 
     socket2.once('connect', () => {
-      socket2.once('client-connection-change', () => {
+      socket2.once('user-joined', () => {
         clearTimeout(timeoutId);
         done(new Error('user should not be notified'));
       });
@@ -73,18 +113,17 @@ describe('client communication', () => {
     sockets.push(socket1, socket2);
     
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
-    });
-    
-    socket2.once('connect', () => {
-      socket2.once('client-connection-change', () => {
-        const socket1Id = socket1.id;
-        socket2.once('client-connection-change', (data) => {
-          expect(data).not.toHaveProperty(socket1Id);
-          done();
+      socket2.once('connect', () => {
+        socket2.once('user-joined', (user) => {
+          socket2.once('user-left', (id) => {
+            expect(id).toBe(user.id);
+            done();
+          });
+
+          socket1.disconnect();
         });
 
-        socket1.disconnect();
+        socket1.emit('user-joined', 'black', () => {});
       });
     });
   });
@@ -97,11 +136,11 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
+      socket1.emit('user-joined', 'black', () => {});
     });
 
     socket2.once('connect', () => {
-      socket2.once('client-connection-change', () => {
+      socket2.once('user-left', () => {
         clearTimeout(timeoutId);
         done(new Error('user should not be notified'));
       });
@@ -117,11 +156,11 @@ describe('client communication', () => {
     sockets.push(socket1, socket2);
 
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
+      socket1.emit('user-joined', 'black', () => {});
     });
 
     socket2.once('connect', () => {
-      socket2.once('client-connection-change', () => {
+      socket2.once('user-joined', () => {
         socket2.once('canvas-change', () => {
           done();
         });
@@ -139,11 +178,11 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
+      socket1.emit('user-joined', 'black', () => {});
     });
 
     socket2.once('connect', () => {
-      socket2.once('client-connection-change', () => {
+      socket2.once('user-joined', () => {
         socket2.once('canvas-change', () => {
           clearTimeout(timeoutId);
           done(new Error('user should not be notified'));
@@ -161,17 +200,18 @@ describe('client communication', () => {
     sockets.push(socket1, socket2);
 
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
-    });
-
-    socket2.once('connect', () => {
-      socket2.once('client-connection-change', () => {
-        socket2.once('client-position-change', (data) => {
-          expect(data).toMatchObject({ id: socket1.id, x: 5, y: 5 });
-          done();
+      socket2.once('connect', () => {
+        socket2.once('user-joined', (user) => {
+          socket2.once('position-change', (id, position) => {
+            expect(id).toBe(user.id);
+            expect(position).toMatchObject({ x: 5, y: 5 });
+            done();
+          });
         });
 
-        socket1.emit('client-position-change', { x: 5, y: 5 });
+        socket1.emit('user-joined', 'black', (id) => {
+          socket1.emit('position-change', id, { x: 5, y: 5 });
+        });
       });
     });
   });
@@ -184,17 +224,17 @@ describe('client communication', () => {
     const timeoutId = setTimeout(() => { done(); }, 3000);
 
     socket1.once('connect', () => {
-      socket1.emit('new-client', 'black');
+      socket1.emit('user-joined', 'black', () => {});
     });
 
     socket2.once('connect', () => {
-      socket2.once('client-connection-change', () => {
-        socket2.once('client-position-change', () => {
+      socket2.once('user-joined', () => {
+        socket2.once('position-change', () => {
           clearTimeout(timeoutId);
           done(new Error('user should not be notified'));
         });
 
-        socket1.emit('client-position-change', { x: 5, y: 5 });
+        socket1.emit('position-change', { x: 5, y: 5 });
       });
     });
   });
