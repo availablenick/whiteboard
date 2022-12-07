@@ -16,6 +16,8 @@ COPY --chown=newuser:newgroup package.json package-lock.json ./
 RUN npm install
 COPY . .
 
+ENV PATH "$PATH:/newdir/node_modules/.bin"
+
 EXPOSE 3000
 
 CMD ["npm", "start"]
